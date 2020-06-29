@@ -1,0 +1,56 @@
+{% extends "@AcMarcheDuobac/base.html.twig" %}
+
+{% block body %}
+
+    <h3>{{ 'title_list_duobac'|trans({'duobacs': duobacs|length}) }}</h3>
+
+    <h6>{{ coordonnees.rdvNom }} {{ coordonnees.rdvPrenom1 }}</h6>
+    <p class="text-muted">{{ coordonnees.rueLib1lg }}</p>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <th>Puce</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for duobac in duobacs %}
+            <tr>
+                <td>{{ duobac.pucNoPuce }}</td>
+                <td>{{ duobac.purDateDebut|date('d-m-Y') }}</td>
+                <td>
+                    {% if duobac.purDateFin %}
+                        {{ duobac.purDateFin|date('d-m-Y') }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Situations</h3>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Matricule</th>
+            <th>Année</th>
+            <th>A charge</th>
+            <th>Puce</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for situation in situations %}
+            <tr>
+                <td>{{ situation.rdvMatricule }}</td>
+                <td>{{ situation.annee }}</td>
+                <td>{{ situation.aCharge }}</td>
+                <td>{{ situation.pucNoPuce }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

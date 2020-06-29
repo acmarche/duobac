@@ -1,0 +1,14 @@
+{% extends "@AcMarcheDuobac/base.html.twig" %}
+
+{% block body %}
+
+    <h3>Pesées pour l'année {{ year }}</h3>
+
+    <div id="line-chart{{ year }}"></div>
+    <div id="column-chart{{ year }}"></div>
+
+    {{ graph1|raw }}
+    {{ graph2|raw }}
+    {% include '@AcMarcheDuobac/pesee/_tableau.html.twig' %}
+
+{% endblock %}

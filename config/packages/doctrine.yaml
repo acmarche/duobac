@@ -1,0 +1,13 @@
+doctrine:
+  orm:
+    mappings:
+      AcMarche\Duobac:
+        is_bundle: false
+        type: annotation
+        dir: '%kernel.project_dir%/src/AcMarche/Duobac/Entity'
+        prefix: 'AcMarche\Duobac'
+        alias: AcMarche\Duobac
+      dql:
+        datetime_functions:
+          month: DoctrineExtensions\Query\Mysql\Month
+          year: DoctrineExtensions\Query\Mysql\Year

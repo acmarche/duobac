@@ -1,0 +1,18 @@
+{% extends '@AcMarcheDuobac/base.html.twig' %}
+
+{% block title %}
+    {{ status_text }}
+{% endblock %}
+
+{% block body -%}
+    <div class="page-header">
+        <h3>Page non trouvée</h3>
+    </div>
+
+    <div class="alert alert-danger">
+
+        {{ exception.message|nl2br|format_file_from_text |trans }}
+
+    </div>
+
+{% endblock %}

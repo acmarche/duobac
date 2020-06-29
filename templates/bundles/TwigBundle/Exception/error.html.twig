@@ -1,0 +1,18 @@
+{% extends '@AcMarcheDuobac/base.html.twig' %}
+
+{% block title %}
+    Une erreur est survenue: {{ status_text }}
+{% endblock %}
+
+{% block body -%}
+    <div class="page-header">
+        <h3>Oups une erreur est survenue</h3>
+    </div>
+
+    <h4>Le serveur a retourné : "{{ status_code }} {{ status_text }}".</h4>
+
+    <div>
+        Merci de prévenir votre administrateur.
+    </div>
+
+{% endblock %}

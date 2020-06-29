@@ -1,0 +1,21 @@
+security:
+    encoders:
+        AcMarche\Duobac\Entity\User:
+            algorithm: auto
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        duobac_user_provider:
+            entity:
+                class: AcMarche\Duobac\Entity\User
+                property: username
+    firewalls:
+        main:
+            #anonymous: lazy
+            provider: duobac_user_provider
+            guard:
+                authenticators:
+                    - AcMarche\Duobac\Security\Authenticator\AppAuthenticator
+            logout:
+                path: app_logout

@@ -1,0 +1,15 @@
+{% extends '@AcMarcheDuobac/base.html.twig' %}
+
+{% block title %}
+    {{ status_text }}
+{% endblock %}
+
+{% block body -%}
+    <div class="page-header">
+        <h3>Accès non autorisé</h3>
+    </div>
+
+    <img src="{{ asset('images/denied.png') }}" alt="denied" class="pull-left" />
+    <p class="pull-left text-danger">Vous n'avez pas le droit d'accèder à cette page</p>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{
+  "name": "acmarche/duobac",
+  "description": "Duobac consultation",
+  "homepage": "https://github.com/acmarche/duobac",
+  "license": "MIT",
+  "type": "symfony-bundle",
+  "authors": [
+    {
+      "name": "Jean-François Sénéchal",
+      "email": "informatique@marche.be",
+      "homepage": "http://cst.marche.be",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "AcMarche\\Duobac\\": "src/AcMarche/Duobac/src"
+    }
+  },
+  "extra": {
+    "symfony": {
+      "allow-contrib": "true"
+    }
+  }
+}

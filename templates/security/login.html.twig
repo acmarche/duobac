@@ -1,0 +1,68 @@
+{% extends '@AcMarcheDuobac/base.html.twig' %}
+
+{% block body %}
+
+
+    <div class="row align-items-start">
+        <div class="col-3">
+        </div>
+        <div class="col-6">
+            <div class="card text-center">
+                <div class="card-header text-white bg-success"><strong>Authentification</strong></div>
+                <div class="card-body">
+                    <p class="card-text">Rentrez votre numéro de matricule <br/>
+                        ainsi que le numéro de puce du duobac
+                        {% if error %}
+                    <div id="login-alert" class="alert alert-danger col-sm-12">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                    {% endif %}
+                    <form method="post" class="form-horizontal" role="form">
+
+                        <label class="sr-only" for="inlineFormInputGroupUsername">Numéro de matricule</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="far fa-user"></i></div>
+                            </div>
+                            <input type="text" value="{{ last_username }}" name="rrn" id="inputEmail" autocomplete="off"
+                                   class="form-control" placeholder="Votre numéro de matricule" required autofocus>
+                        </div>
+
+                        <label class="sr-only" for="inlineFormInputGroupUsername">Numéro de puce</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="far fa-trash-alt"></i></div>
+                            </div>
+                            <input type="password" name="puce" id="inputPassword" class="form-control"
+                                   autocomplete="off"
+                                   placeholder="Numéro de puce du duobac" required>
+                        </div>
+
+                        <input id="login-remember" type="hidden" name="remember" value="1">
+
+                        <div class="form-group mt-3">
+                            <!-- Button -->
+
+                            <div class="col-sm-12 controls">
+                                <input type="submit" class="btn btn-success btn-block" id="_submit" name="_submit"
+                                       value="Me connecter"/>
+
+                            </div>
+                        </div>
+                        <input type="hidden" name="_csrf_token"
+                               value="{{ csrf_token('authenticate') }}"
+                        >
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Où trouver ces informations ?
+            </button>
+        </div>
+    </div>
+
+    {% include '@AcMarcheDuobac/security/_facture.html.twig' %}
+
+{% endblock %}

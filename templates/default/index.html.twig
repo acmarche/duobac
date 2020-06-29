@@ -1,0 +1,11 @@
+{% extends "@AcMarcheDuobac/base.html.twig" %}
+
+{% block body %}
+
+    <h3>Bienvenue sur la consultation de votre duobac</h3>
+
+    {% if not is_granted('ROLE_DUOBAC') %}
+        <a href="{{ path('app_login') }}">Connectez vous pour consulter vos pesées</a>
+    {% endif %}
+
+{% endblock %}

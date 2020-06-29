@@ -1,0 +1,15 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+fos_ck_editor:
+    configs:
+        sepulture_config:
+            toolbar: acmarche_toolbar
+    toolbars:
+        configs:
+            acmarche_toolbar: ['@standard.clipboard', '@standard.editing', '@standard.links', '@table', '@standard.tools', '@standard.document', '/', '@full.colors', '@full.paragraph', '/', '@standard.basic_styles']
+        items:
+            table: ['table']
