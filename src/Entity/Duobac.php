@@ -2,7 +2,6 @@
 
 namespace AcMarche\Duobac\Entity;
 
-use AcMarche\Security\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -168,7 +167,7 @@ class Duobac
 
     /**
      * @var User|null
-     * @ORM\ManyToOne(targetEntity="AcMarche\Security\Entity\User", inversedBy="duobacs")
+     * @ORM\ManyToOne(targetEntity="AcMarche\Duobac\Entity\User", inversedBy="duobacs")
      * @ORM\JoinColumn(nullable=true)
      */
     private $user;
