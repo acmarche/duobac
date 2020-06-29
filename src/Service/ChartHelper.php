@@ -17,7 +17,7 @@ class ChartHelper
     {
     }
 
-    public static function getInstance()
+    public static function getInstance(): Lavacharts
     {
         return new Lavacharts();
     }
