@@ -66,7 +66,8 @@ class ImportManager
         $this->situationFamilialeRepository->flush();
     }
 
-    public function treatment(array $data, int $year) {
+    public function treatment(array $data, int $year)
+    {
         $matricule = $data[0];
 
         if ($this->skip($matricule)) {
@@ -142,7 +143,7 @@ class ImportManager
         $this->peseeManager->flush();
     }
 
-    function getLines($file)
+    function getLines($file): iterable
     {
         $handle = fopen($file, 'r');
         try {
