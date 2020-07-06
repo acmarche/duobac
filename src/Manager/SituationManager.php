@@ -4,8 +4,8 @@
 namespace AcMarche\Duobac\Manager;
 
 use AcMarche\Duobac\Entity\SituationFamiliale;
+use AcMarche\Duobac\Entity\User;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
-use AcMarche\Security\Entity\User;
 
 class SituationManager
 {
@@ -34,7 +34,7 @@ class SituationManager
     /**
      * @param string $matricule
      * @param int $year
-     * @return \AcMarche\Duobac\Entity\SituationFamiliale[]|array
+     * @return SituationFamiliale[]|array
      */
     public function getSituationsByMatriculeAndYear(string $matricule, int $year)
     {
@@ -55,7 +55,7 @@ class SituationManager
 
     /**
      * @param string $matricule
-     * @return \AcMarche\Duobac\Entity\SituationFamiliale[]|array
+     * @return SituationFamiliale[]|array
      */
     public function getSituationsByMatricule(string $matricule)
     {
