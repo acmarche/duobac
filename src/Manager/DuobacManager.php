@@ -9,9 +9,9 @@
 namespace AcMarche\Duobac\Manager;
 
 use AcMarche\Duobac\Entity\Duobac;
+use AcMarche\Duobac\Entity\User;
 use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Service\DateUtils;
-use AcMarche\Security\Entity\User;
 
 class DuobacManager
 {
