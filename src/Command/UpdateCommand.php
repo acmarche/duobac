@@ -22,7 +22,6 @@ class UpdateCommand extends Command
      * @var ParameterBagInterface
      */
     private $parameterBag;
-
     /**
      * @var array
      */
@@ -51,7 +50,7 @@ class UpdateCommand extends Command
             ->addArgument('type', InputArgument::REQUIRED, 'Choix:' . implode(',', $this->types));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output):int
     {
         $io = new SymfonyStyle($input, $output);
         $year = (int)$input->getArgument('annee');
@@ -64,7 +63,7 @@ class UpdateCommand extends Command
         }
 
         if ($type === 'duobac') {
-            $this->importManager->open($this->parameterBag->get('kernel.project_dir') . '/data/Pesees2019.csv', $year);
+            $this->importManager->open($this->parameterBag->get('kernel.project_dir') . '/data/Pesees2020.csv', $year);
         }
 
         if ($type === 'moyenne') {
