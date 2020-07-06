@@ -23,4 +23,5 @@ interface PeseeInterface
     public function getACharge(): ?int;
 
     public function setACharge(int $a_charge): self;
+
 }

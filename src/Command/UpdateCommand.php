@@ -47,23 +47,27 @@ class UpdateCommand extends Command
         $this
             ->setDescription('Mise à jour des releves')
             ->addArgument('annee', InputArgument::REQUIRED, 'Indiquée l\'année')
-            ->addArgument('type', InputArgument::REQUIRED, 'Choix:' . implode(',', $this->types));
+            ->addArgument('type', InputArgument::REQUIRED, 'Choix:'.implode(',', $this->types));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output):int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $year = (int)$input->getArgument('annee');
         $type = $input->getArgument('type');
 
         if (!in_array($type, $this->types)) {
-            $io->error(sprintf('Erreur pour le type, les choix possibles sont: ' . implode(',', $this->types)));
+            $io->error(sprintf('Erreur pour le type, les choix possibles sont: '.implode(',', $this->types)));
 
             return 1;
         }
 
+        $file = $this->parameterBag->get('kernel.project_dir').'/data/Pesees2020.csv';
+
         if ($type === 'duobac') {
-            $this->importManager->open($this->parameterBag->get('kernel.project_dir') . '/data/Pesees2020.csv', $year);
+            foreach ($this->importManager->getLines($file) as $data) {
+                $this->importManager->treatment($data, $year);
+            }
         }
 
         if ($type === 'moyenne') {
