@@ -1,0 +1,6 @@
+title_list_duobac: >
+    {duobacs, plural,
+        =0    {Aucun duobac}
+        one   {Votre duobac}
+        other {Listes de vos duobacs}
+    }

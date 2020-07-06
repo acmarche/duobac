@@ -2,8 +2,6 @@
 
 namespace AcMarche\Duobac\Controller;
 
-use AcMarche\Duobac\Manager\PeseeManager;
-use AcMarche\Duobac\Repository\PeseeRepository;
 use AcMarche\Duobac\Manager\SituationManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,21 +9,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @var PeseeManager
-     */
-    private $peseeManager;
-    /**
-     * @var PeseeRepository
-     */
-    private $peseeRepository;
-    /**
      * @var SituationManager
      */
     private $situationManager;
 
-    public function __construct(SituationManager $situationManager, PeseeRepository $peseeRepository)
+    public function __construct(SituationManager $situationManager)
     {
-        $this->peseeRepository = $peseeRepository;
         $this->situationManager = $situationManager;
     }
 
