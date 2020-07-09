@@ -148,12 +148,13 @@ class PeseeManager
             if (!isset($pesees[$numMois])) {
                 $pesees[$numMois]['poids'] = 0;
 
-                $date = \DateTime::createFromFormat('Y-m-d', $year . '-' . $numMois . '-01');
+                $date = \DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
                 $menage = $data['menage'] ?? $this->peseeMoyenneRepository->findOneByChargeAndDate($charge, $date);
-                if(!$menage){
+                if (!$menage) {
                     $pesees[$numMois]['menage'] = 0;
+                } else {
+                    $pesees[$numMois]['menage'] = $menage->getPoids();
                 }
-                $pesees[$numMois]['menage'] = $menage->getPoids();
             }
         }
 
