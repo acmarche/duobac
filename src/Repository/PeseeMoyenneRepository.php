@@ -4,7 +4,7 @@ namespace AcMarche\Duobac\Repository;
 
 use AcMarche\Duobac\Entity\PeseeMoyenne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**

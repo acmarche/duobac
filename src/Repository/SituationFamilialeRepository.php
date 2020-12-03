@@ -4,7 +4,7 @@ namespace AcMarche\Duobac\Repository;
 
 use AcMarche\Duobac\Entity\SituationFamiliale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method SituationFamiliale|null find($id, $lockMode = null, $lockVersion = null)
