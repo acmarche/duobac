@@ -3,11 +3,13 @@
         <a class="nav-link" href="{{ path('duobac_list') }}">
             Mes duobacs
         </a>
+    </li>
+
     {{ render(controller(
         'AcMarche\\Duobac\\Controller\\DefaultController::menuUser',
         { 'max': 3 }
     )) }}
-</li>
+
 {% endif %}
 <li class="nav-item{% if action == 'duobac_contact' %} active{% endif %}">
     <a class="nav-link" href="{{ path('duobac_contact') }}">
