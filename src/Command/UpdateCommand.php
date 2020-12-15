@@ -65,8 +65,11 @@ class UpdateCommand extends Command
         $file = $this->parameterBag->get('kernel.project_dir').'/data/Pesees2020.csv';
 
         if ($type === 'duobac') {
+            $i = 0;
             foreach ($this->importManager->getLines($file) as $data) {
+                $io->writeln($data[1].' '.$i);
                 $this->importManager->treatment($data, $year);
+                $i++;
             }
         }
 
