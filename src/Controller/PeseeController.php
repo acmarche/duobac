@@ -179,6 +179,8 @@ class PeseeController extends AbstractController
         } catch (InvalidRowProperty $e) {
         }
 
+        $chart = $this->chartHelper->create($peseesGrouped, $year);
+
         return $this->render(
             '@AcMarcheDuobac/pesee/show.html.twig',
             [

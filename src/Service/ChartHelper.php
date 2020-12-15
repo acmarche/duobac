@@ -10,11 +10,45 @@ namespace AcMarche\Duobac\Service;
 
 use AcMarche\Duobac\Entity\PeseeInterface;
 use Khill\Lavacharts\Lavacharts;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class ChartHelper
 {
-    public function __construct()
+    /**
+     * @var ChartBuilderInterface
+     */
+    private $chartBuilder;
+
+    public function __construct(ChartBuilderInterface $chartBuilder)
     {
+        $this->chartBuilder = $chartBuilder;
+    }
+
+    /**
+     * https://symfony.com/blog/new-in-symfony-the-ux-initiative-a-new-javascript-ecosystem-for-symfony
+     * @return Chart
+     */
+    public function create(iterable $pesees, int $year): Chart
+    {
+        $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
+        $chart->setData(
+            [
+                'labels' => ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                'datasets' => [
+                    [
+                        'label' => 'My First dataset',
+                        'backgroundColor' => 'rgb(255, 99, 132)',
+                        'borderColor' => 'rgb(255, 99, 132)',
+                        'data' => [0, 10, 5, 2, 20, 30, 45],
+                    ],
+                ],
+            ]
+        );
+
+        $chart->setOptions([/* ... */]);
+
+        return $chart;
     }
 
     public static function getInstance(): Lavacharts
