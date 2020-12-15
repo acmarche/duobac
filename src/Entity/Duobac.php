@@ -136,7 +136,7 @@ class Duobac
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=4, nullable=true)
+     * @ORM\Column(type="string", length=24, nullable=true)
      */
     private $adr_boite;
 
