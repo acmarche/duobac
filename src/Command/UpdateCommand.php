@@ -62,7 +62,7 @@ class UpdateCommand extends Command
             return 1;
         }
 
-        $file = $this->parameterBag->get('kernel.project_dir').'/data/Pesees2020.csv';
+        $file = $this->parameterBag->get('kernel.project_dir').'/data/Pesees2021.csv';
 
         if ($type === 'duobac') {
             $i = 0;
