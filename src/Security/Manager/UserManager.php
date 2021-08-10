@@ -18,7 +18,6 @@ class UserManager
     private UserRepository $userRepository;
     private PasswordManager $passwordManager;
 
-
     public function __construct(
         UserRepository $userRepository,
         PasswordManager $passwordManager
@@ -61,6 +60,7 @@ class UserManager
     public function delete(User $user): void
     {
         $this->userRepository->remove($user);
+        $this->userRepository->flush();
     }
 
     public function addRoleDuobac(User $user): void

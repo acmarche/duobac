@@ -22,23 +22,17 @@ class ImportManager
 {
     private string $format = 'd/m/Y';
 
-    private DecoderInterface $serializer;
     private DuobacManager $duobacManager;
     private PeseeManager $peseeManager;
-    private MoyenneManager $moyenneManager;
     private SituationFamilialeRepository $situationFamilialeRepository;
 
     public function __construct(
-        DecoderInterface $serializer,
         DuobacManager $duobacManager,
         PeseeManager $peseeManager,
-        MoyenneManager $moyenneManager,
         SituationFamilialeRepository $situationFamilialeRepository
     ) {
-        $this->serializer = $serializer;
         $this->duobacManager = $duobacManager;
         $this->peseeManager = $peseeManager;
-        $this->moyenneManager = $moyenneManager;
         $this->situationFamilialeRepository = $situationFamilialeRepository;
     }
 

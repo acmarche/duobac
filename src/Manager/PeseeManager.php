@@ -8,37 +8,30 @@
 
 namespace AcMarche\Duobac\Manager;
 
-use DateTimeInterface;
-use DateTime;
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\PeseeInterface;
 use AcMarche\Duobac\Entity\PeseeMoyenne;
 use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
 use AcMarche\Duobac\Repository\PeseeRepository;
 use AcMarche\Duobac\Service\DateUtils;
+use DateTime;
+use DateTimeInterface;
 
 class PeseeManager
 {
     private PeseeRepository $peseeRepository;
-    private DateUtils $dateUtils;
-
     private DuobacManager $duobacManager;
-    private MoyenneManager $moyenneManager;
     private PeseeMoyenneRepository $peseeMoyenneRepository;
     private SituationManager $situationManager;
 
     public function __construct(
         PeseeRepository $peseeRepository,
-        MoyenneManager $moyenneManager,
         PeseeMoyenneRepository $peseeMoyenneRepository,
         DuobacManager $duobacManager,
-        SituationManager $situationManager,
-        DateUtils $dateUtils
+        SituationManager $situationManager
     ) {
         $this->peseeRepository = $peseeRepository;
-        $this->dateUtils = $dateUtils;
         $this->duobacManager = $duobacManager;
-        $this->moyenneManager = $moyenneManager;
         $this->peseeMoyenneRepository = $peseeMoyenneRepository;
         $this->situationManager = $situationManager;
     }
@@ -46,8 +39,8 @@ class PeseeManager
     public function getInstance(string $puc_no_puce, DateTimeInterface $date_pesee, float $poids, int $aCharge): Pesee
     {
         if (($pesee = $this->peseeRepository->findOneBy(
-            ['puc_no_puce' => $puc_no_puce, 'date_pesee' => $date_pesee]
-        )) === null) {
+                ['puc_no_puce' => $puc_no_puce, 'date_pesee' => $date_pesee]
+            )) === null) {
             $pesee = new Pesee($puc_no_puce, $date_pesee, $poids, $aCharge);
             $this->peseeRepository->persist($pesee);
         }
