@@ -7,9 +7,8 @@ use AcMarche\Duobac\Manager\MoyenneManager;
 use AcMarche\Duobac\Manager\PeseeManager;
 use AcMarche\Duobac\Manager\SituationManager;
 use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
-use AcMarche\Duobac\Repository\PeseeRepository;
-use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use AcMarche\Duobac\Service\ChartHelper;
+use Exception;
 use Khill\Lavacharts\Exceptions\InvalidCellCount;
 use Khill\Lavacharts\Exceptions\InvalidColumnType;
 use Khill\Lavacharts\Exceptions\InvalidLabel;
@@ -17,6 +16,7 @@ use Khill\Lavacharts\Exceptions\InvalidRowDefinition;
 use Khill\Lavacharts\Exceptions\InvalidRowProperty;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -27,52 +27,22 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PeseeController extends AbstractController
 {
-    /**
-     * @var PeseeRepository
-     */
-    private $peseeRepository;
-    /**
-     * @var PeseeMoyenneRepository
-     */
-    private $peseeMoyenneRepository;
-    /**
-     * @var SituationFamilialeRepository
-     */
-    private $situationFamilialeRepository;
-    /**
-     * @var PeseeManager $peseeManager
-     */
-    private $peseeManager;
-    /**
-     * @var ChartHelper
-     */
-    private $chartHelper;
-    /**
-     * @var DuobacManager
-     */
-    private $duobacManager;
-    /**
-     * @var SituationManager
-     */
-    private $situationManager;
-    /**
-     * @var MoyenneManager
-     */
-    private $moyenneManager;
+    private PeseeMoyenneRepository $peseeMoyenneRepository;
+    private PeseeManager $peseeManager;
+    private ChartHelper $chartHelper;
+    private DuobacManager $duobacManager;
+    private SituationManager $situationManager;
+    private MoyenneManager $moyenneManager;
 
     public function __construct(
         DuobacManager $duobacManager,
         SituationManager $situationManager,
-        PeseeRepository $peseeRepository,
         PeseeManager $peseeManager,
         ChartHelper $chartHelper,
         PeseeMoyenneRepository $peseeMoyenneRepository,
-        MoyenneManager $moyenneManager,
-        SituationFamilialeRepository $situationFamilialeRepository
+        MoyenneManager $moyenneManager
     ) {
-        $this->peseeRepository = $peseeRepository;
         $this->peseeMoyenneRepository = $peseeMoyenneRepository;
-        $this->situationFamilialeRepository = $situationFamilialeRepository;
         $this->peseeManager = $peseeManager;
         $this->chartHelper = $chartHelper;
         $this->duobacManager = $duobacManager;
@@ -84,7 +54,7 @@ class PeseeController extends AbstractController
      * @Route("/all",name="duobac_pesee_all")
      *
      */
-    public function all()
+    public function all(): Response
     {
         $user = $this->getUser();
         $rdvMatricule = $user->getRdvMatricule();
@@ -145,14 +115,14 @@ class PeseeController extends AbstractController
      * @Route("/parannee/{year}",name="duobac_annee")
      *
      */
-    public function annee(int $year)
+    public function annee(int $year): Response
     {
         $user = $this->getUser();
         $rdvMatricule = $user->getRdvMatricule();
 
         try {
             $pesees = $this->peseeManager->getByMatriculeAndYear($rdvMatricule, $year);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('danger', $e->getMessage());
 
             return $this->redirectToRoute('duobac_home');

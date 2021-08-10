@@ -10,7 +10,7 @@ namespace AcMarche\Duobac\Service;
 
 class StringUtils
 {
-    public static function removeChars(string $string)
+    public static function removeChars(string $string): ?string
     {
         return preg_replace("/[^0-9]/", "", $string);
     }

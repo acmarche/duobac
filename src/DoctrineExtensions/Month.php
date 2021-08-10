@@ -8,6 +8,7 @@
 
 namespace AcMarche\Duobac\DoctrineExtensions;
 
+use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\SqlWalker;
@@ -16,12 +17,12 @@ class Month extends FunctionNode
 {
     public $date;
 
-    public function getSql(SqlWalker $sqlWalker)
+    public function getSql(SqlWalker $sqlWalker): string
     {
         return 'MONTH('.$sqlWalker->walkArithmeticPrimary($this->date).')';
     }
 
-    public function parse(\Doctrine\ORM\Query\Parser $parser)
+    public function parse(Parser $parser): void
     {
         $parser->match(Lexer::T_IDENTIFIER);
         $parser->match(Lexer::T_OPEN_PARENTHESIS);

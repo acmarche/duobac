@@ -2,12 +2,11 @@
 
 namespace AcMarche\Duobac\Entity;
 
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- *
- *
  * @ORM\Table("pesee", uniqueConstraints={
  *     @ORM\UniqueConstraint(columns={"puc_no_puce", "date_pesee"})
  * })
@@ -22,16 +21,11 @@ class Pesee extends AbstractPesee
     public const NOMBRE_PESEE = 80;
 
     /**
-     * @var string
-     *
      * @ORM\Column( type="string", length=30, nullable=false)
      */
-    private $puc_no_puce;
+    private string $puc_no_puce;
 
-    /**
-     * @var PeseeMoyenne|null $moyenne
-     */
-    private $moyenne;
+    private ?PeseeMoyenne $moyenne = null;
 
     /**
      * @return PeseeMoyenne|null
@@ -49,7 +43,7 @@ class Pesee extends AbstractPesee
         $this->moyenne = $moyenne;
     }
 
-    public function __construct(string $pucNoPuce, \DateTimeInterface $date, float $poids, $a_charge)
+    public function __construct(string $pucNoPuce, DateTimeInterface $date, float $poids, $a_charge)
     {
         $this->puc_no_puce = $pucNoPuce;
         $this->date_pesee = $date;
@@ -67,7 +61,7 @@ class Pesee extends AbstractPesee
         return $this->puc_no_puce;
     }
 
-    public function setPucNoPuce(string $puc_no_puce): PeseeInterface
+    public function setPucNoPuce(string $puc_no_puce): self
     {
         $this->puc_no_puce = $puc_no_puce;
 

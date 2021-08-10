@@ -15,42 +15,32 @@ use Doctrine\ORM\Mapping as ORM;
 class SituationFamiliale
 {
     /**
-     * @var integer|null $id
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=15, nullable=false)
      */
-    private $rdv_matricule;
+    private ?string $rdv_matricule;
 
     /**
-    * @var string
-    *
-    * @ORM\Column(type="string", length=30, nullable=false)
-    */
-    private $puc_no_puce;
+     * @ORM\Column(type="string", length=30, nullable=false)
+     */
+    private ?string $puc_no_puce;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer", length=4, nullable=false)
      */
-    private $annee;
+    private ?int $annee;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer", nullable=false)
      */
-    private $a_charge;
+    private ?int $a_charge;
 
     public function __construct(string $rdv_matricule, string $puce, int $annee, int $a_charge)
     {
@@ -70,7 +60,7 @@ class SituationFamiliale
         return $this->id;
     }
 
-    public function getRdvMatricule(): ?string
+    public function getRdvMatricule(): string
     {
         return $this->rdv_matricule;
     }
@@ -82,7 +72,7 @@ class SituationFamiliale
         return $this;
     }
 
-    public function getAnnee(): ?int
+    public function getAnnee(): int
     {
         return $this->annee;
     }
@@ -94,7 +84,7 @@ class SituationFamiliale
         return $this;
     }
 
-    public function getACharge(): ?int
+    public function getACharge(): int
     {
         return $this->a_charge;
     }
@@ -106,7 +96,7 @@ class SituationFamiliale
         return $this;
     }
 
-    public function getPucNoPuce(): ?string
+    public function getPucNoPuce(): string
     {
         return $this->puc_no_puce;
     }

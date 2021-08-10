@@ -8,6 +8,8 @@
 
 namespace AcMarche\Duobac\Manager;
 
+use DateTimeInterface;
+use DateTime;
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\PeseeInterface;
 use AcMarche\Duobac\Entity\PeseeMoyenne;
@@ -17,31 +19,13 @@ use AcMarche\Duobac\Service\DateUtils;
 
 class PeseeManager
 {
-    /**
-     * @var PeseeRepository
-     */
-    private $peseeRepository;
-    /**
-     * @var DateUtils
-     */
-    private $dateUtils;
+    private PeseeRepository $peseeRepository;
+    private DateUtils $dateUtils;
 
-    /**
-     * @var DuobacManager
-     */
-    private $duobacManager;
-    /**
-     * @var MoyenneManager
-     */
-    private $moyenneManager;
-    /**
-     * @var PeseeMoyenneRepository
-     */
-    private $peseeMoyenneRepository;
-    /**
-     * @var SituationManager
-     */
-    private $situationManager;
+    private DuobacManager $duobacManager;
+    private MoyenneManager $moyenneManager;
+    private PeseeMoyenneRepository $peseeMoyenneRepository;
+    private SituationManager $situationManager;
 
     public function __construct(
         PeseeRepository $peseeRepository,
@@ -59,11 +43,11 @@ class PeseeManager
         $this->situationManager = $situationManager;
     }
 
-    public function getInstance(string $puc_no_puce, \DateTimeInterface $date_pesee, float $poids, int $aCharge): Pesee
+    public function getInstance(string $puc_no_puce, DateTimeInterface $date_pesee, float $poids, int $aCharge): Pesee
     {
-        if (!$pesee = $this->peseeRepository->findOneBy(
+        if (($pesee = $this->peseeRepository->findOneBy(
             ['puc_no_puce' => $puc_no_puce, 'date_pesee' => $date_pesee]
-        )) {
+        )) === null) {
             $pesee = new Pesee($puc_no_puce, $date_pesee, $poids, $aCharge);
             $this->peseeRepository->persist($pesee);
         }
@@ -89,16 +73,16 @@ class PeseeManager
      *
      * @param string $puce
      * @param int $year
-     * @param \DateTimeInterface|null $dateDebut
-     * @param \DateTimeInterface|null $dateFin
+     * @param DateTimeInterface|null $dateDebut
+     * @param DateTimeInterface|null $dateFin
      * @return PeseeInterface[]
      */
     public function getPeseesByPuceAndYear(
         string $puce,
         int $year,
-        \DateTimeInterface $dateDebut = null,
-        \DateTimeInterface $dateFin = null
-    ) {
+        DateTimeInterface $dateDebut = null,
+        DateTimeInterface $dateFin = null
+    ): array {
         return $this->peseeRepository->findByPuceAndYear($puce, $year, $dateDebut, $dateFin);
     }
 
@@ -108,7 +92,7 @@ class PeseeManager
      * @return PeseeInterface[];
      *
      */
-    public function getByMatriculeAndYear(string $rdvMatricule, int $year)
+    public function getByMatriculeAndYear(string $rdvMatricule, int $year): array
     {
         $situations = $this->situationManager->getSituationsByMatriculeAndYear($rdvMatricule, $year);
 
@@ -139,22 +123,16 @@ class PeseeManager
      *
      * @param array $pesees
      * @param int $year
-     *
-     * @return array
      */
-    public function setMissingMonths(array $pesees, int $year, int $charge)
+    public function setMissingMonths(array $pesees, int $year, int $charge): array
     {
         foreach (DateUtils::getListeNumeroMoisWithOnedigit() as $numMois) {
             if (!isset($pesees[$numMois])) {
                 $pesees[$numMois]['poids'] = 0;
 
-                $date = \DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
+                $date = DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
                 $menage = $data['menage'] ?? $this->peseeMoyenneRepository->findOneByChargeAndDate($charge, $date);
-                if (!$menage) {
-                    $pesees[$numMois]['menage'] = 0;
-                } else {
-                    $pesees[$numMois]['menage'] = $menage->getPoids();
-                }
+                $pesees[$numMois]['menage'] = $menage ? $menage->getPoids() : 0;
             }
         }
 
@@ -165,15 +143,14 @@ class PeseeManager
 
     /**
      * @param iterable|Pesee[] $pesees
-     * @return array
      */
-    public function groupPeseesByMonth(iterable $pesees)
+    public function groupPeseesByMonth(iterable $pesees): array
     {
         $all = [];
         foreach ($pesees as $pesee) {
             $mois = (int)$pesee->getDatePesee()->format('m');
             $poids = $pesee->getPoids();
-            $menagePoids = $pesee->getMoyenne() ? $pesee->getMoyenne()->getPoids() : 0;
+            $menagePoids = $pesee->getMoyenne() !== null ? $pesee->getMoyenne()->getPoids() : 0;
 
             isset($all[$mois]['poids']) ? $all[$mois]['poids'] += $poids : $all[$mois]['poids'] = $poids;
             $all[$mois]['menage'] = $menagePoids;
@@ -186,7 +163,7 @@ class PeseeManager
      * @param iterable|Pesee[] $pesees
      * @return Pesee[]
      */
-    public function groupPeseesByMonth22(iterable $pesees)
+    public function groupPeseesByMonth22(iterable $pesees): array
     {
         $data = [];
         foreach ($pesees as $pesee) {
@@ -206,12 +183,12 @@ class PeseeManager
         return $data;
     }
 
-    public function flush()
+    public function flush(): void
     {
         $this->peseeRepository->flush();
     }
 
-    public function persist(Pesee $pesee)
+    public function persist(Pesee $pesee): void
     {
         $this->peseeRepository->persist($pesee);
     }

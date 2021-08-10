@@ -14,4 +14,5 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PeseeMoyenne extends AbstractPesee implements PeseeInterface
 {
+
 }

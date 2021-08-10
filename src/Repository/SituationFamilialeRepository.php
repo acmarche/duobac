@@ -2,6 +2,7 @@
 
 namespace AcMarche\Duobac\Repository;
 
+use AcMarche\Duobac\Doctrine\OrmCrudTrait;
 use AcMarche\Duobac\Entity\SituationFamiliale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,25 +15,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SituationFamilialeRepository extends ServiceEntityRepository
 {
+    use OrmCrudTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, SituationFamiliale::class);
-    }
-
-    public function persist(SituationFamiliale $situationFamiliale)
-    {
-        $this->_em->persist($situationFamiliale);
-    }
-
-    public function flush()
-    {
-        $this->_em->flush();
-    }
-
-    public function remove(SituationFamiliale $situationFamiliale)
-    {
-        $this->_em->remove($situationFamiliale);
-        $this->flush();
     }
 
     /**

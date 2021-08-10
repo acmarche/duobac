@@ -8,6 +8,9 @@
 
 namespace AcMarche\Duobac\Manager;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use AcMarche\Duobac\Entity\Duobac;
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\SituationFamiliale;
@@ -17,28 +20,13 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 class ImportManager
 {
-    private $format = 'd/m/Y';
+    private string $format = 'd/m/Y';
 
-    /**
-     * @var CsvEncoder
-     */
-    private $serializer;
-    /**
-     * @var DuobacManager
-     */
-    private $duobacManager;
-    /**
-     * @var PeseeManager
-     */
-    private $peseeManager;
-    /**
-     * @var MoyenneManager
-     */
-    private $moyenneManager;
-    /**
-     * @var SituationFamilialeRepository
-     */
-    private $situationFamilialeRepository;
+    private DecoderInterface $serializer;
+    private DuobacManager $duobacManager;
+    private PeseeManager $peseeManager;
+    private MoyenneManager $moyenneManager;
+    private SituationFamilialeRepository $situationFamilialeRepository;
 
     public function __construct(
         DecoderInterface $serializer,
@@ -54,11 +42,11 @@ class ImportManager
         $this->situationFamilialeRepository = $situationFamilialeRepository;
     }
 
-    public function updateSituationFamiliale(string $matricule, string $puce, int $year, int $aCharge)
+    public function updateSituationFamiliale(string $matricule, string $puce, int $year, int $aCharge): void
     {
-        if (!$situationFamiliale = $this->situationFamilialeRepository->findOneBy(
+        if (($situationFamiliale = $this->situationFamilialeRepository->findOneBy(
             ['rdv_matricule' => $matricule, 'annee' => $year]
-        )) {
+        )) === null) {
             $situationFamiliale = new SituationFamiliale($matricule, $puce, $year, $aCharge);
             $this->situationFamilialeRepository->persist($situationFamiliale);
         }
@@ -66,7 +54,7 @@ class ImportManager
         $this->situationFamilialeRepository->flush();
     }
 
-    public function treatment(array $data, int $year)
+    public function treatment(array $data, int $year): void
     {
         $matricule = $data[0];
 
@@ -94,7 +82,7 @@ class ImportManager
         $codeClef = (int)($data[18]);
         $codeDechet = (int)($data[19]);
 
-        if (!$duobac = $this->duobacManager->getDuobacByMatriculeAndPuce($matricule, $puce)) {
+        if (($duobac = $this->duobacManager->getDuobacByMatriculeAndPuce($matricule, $puce)) === null) {
             $duobac = new Duobac($matricule, $puce);
             $this->duobacManager->persist($duobac);
         }
@@ -111,10 +99,10 @@ class ImportManager
         $duobac->setRdvCodClasse($codeClass);
         $duobac->setPucNoConteneur(utf8_encode($numContainer));
         if ($purDateDebut) {
-            $duobac->setPurDateDebut(\DateTime::createFromFormat($this->format, $purDateDebut));
+            $duobac->setPurDateDebut(DateTime::createFromFormat($this->format, $purDateDebut));
         }
         if ($purDateFin) {
-            $duobac->setPurDateFin(\DateTime::createFromFormat($this->format, $purDateFin));
+            $duobac->setPurDateFin(DateTime::createFromFormat($this->format, $purDateFin));
         }
         $duobac->setPurCodTarification($codeTarif);
         $duobac->setPucCodCapacite($codeCapacite);
@@ -130,14 +118,14 @@ class ImportManager
         if ($max > 20) {
             while ($i < $max) {
                 $date = $data[$i];
-                $i = $i + 1;
+                $i += 1;
                 $pesee = $data[$i];
                 if ($pesee != null && $date != null) {
-                    $date = \DateTime::createFromFormat($this->format, $date);
+                    $date = DateTime::createFromFormat($this->format, $date);
                     $pesee = preg_replace('#,#', '.', $pesee);
                     $this->insertReleve($puce, $date, $pesee, $aCharge);
                 }
-                $i = $i + 1;
+                $i += 1;
             }
         }
         $this->peseeManager->flush();
@@ -155,19 +143,18 @@ class ImportManager
         }
     }
 
-    public function insertReleve(string $puce, \DateTime $date, float $poid, int $acharge)
+    /**
+     * @param DateTime|DateTimeImmutable $date
+     */
+    public function insertReleve(string $puce, DateTimeInterface $date, float $poid, int $acharge): void
     {
         $pesee = new Pesee($puce, $date, $poid, $acharge);
         $this->peseeManager->persist($pesee);
     }
 
-    public function skip($matricule)
+    public function skip($matricule): bool
     {
-        if (preg_match("#[0-9]+#", $matricule) && strlen($matricule) > 2) {
-            return false;
-        }
-
-        return true;
+        return !(preg_match("#\\d+#", $matricule) && strlen($matricule) > 2);
     }
 
 }

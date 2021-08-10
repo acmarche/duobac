@@ -2,6 +2,8 @@
 
 namespace AcMarche\Duobac\Repository;
 
+use AcMarche\Duobac\Doctrine\OrmCrudTrait;
+use DateTimeInterface;
 use AcMarche\Duobac\Entity\PeseeMoyenne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,34 +17,19 @@ use Doctrine\ORM\NonUniqueResultException;
  */
 class PeseeMoyenneRepository extends ServiceEntityRepository
 {
+    use OrmCrudTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PeseeMoyenne::class);
     }
 
-    public function persist(PeseeMoyenne $moyenne)
-    {
-        $this->_em->persist($moyenne);
-    }
-
-    public function flush()
-    {
-        $this->_em->flush();
-    }
-
-    public function remove(PeseeMoyenne $moyenne)
-    {
-        $this->_em->remove($moyenne);
-        $this->flush();
-    }
-
     /**
      * @param int $charge
-     * @param \DateTimeInterface $dateTime
+     * @param DateTimeInterface $dateTime
      * @return PeseeMoyenne|null
-     *
      */
-    public function findOneByChargeAndDate(int $charge, \DateTimeInterface $dateTime)
+    public function findOneByChargeAndDate(int $charge, DateTimeInterface $dateTime)
     {
         $builder = $this->createQueryBuilder('pesee_moyenne');
 

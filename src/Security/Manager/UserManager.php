@@ -15,14 +15,8 @@ use AcMarche\Duobac\Security\SecurityData;
 
 class UserManager
 {
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-    /**
-     * @var PasswordManager
-     */
-    private $passwordManager;
+    private UserRepository $userRepository;
+    private PasswordManager $passwordManager;
 
 
     public function __construct(
@@ -54,22 +48,22 @@ class UserManager
         return $user;
     }
 
-    public function insert(User $user)
+    public function insert(User $user): void
     {
         $this->userRepository->insert($user);
     }
 
-    public function save()
+    public function save(): void
     {
         $this->userRepository->save();
     }
 
-    public function delete(User $user)
+    public function delete(User $user): void
     {
         $this->userRepository->remove($user);
     }
 
-    public function addRoleDuobac(User $user)
+    public function addRoleDuobac(User $user): void
     {
         if (!in_array(SecurityData::getRoleUser(), $user->getRoles())) {
             $user->setRoles([SecurityData::getRoleUser()]);
@@ -86,9 +80,8 @@ class UserManager
 
     /**
      * @param string $email
-     * @return User|null
      */
-    public function findOneByEmail(string $email)
+    public function findOneByEmail(string $email): ?User
     {
         return $this->userRepository->findOneBy(['email' => $email]);
     }

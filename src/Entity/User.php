@@ -19,7 +19,7 @@ class User implements UserInterface
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var iterable $roles
@@ -31,37 +31,31 @@ class User implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
+    private ?string $password = null;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $nom;
+    private ?string $nom = null;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $prenom;
+    private ?string $prenom = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=15, nullable=false)
      */
-    private $rdv_matricule;
+    private ?string $rdv_matricule = null;
 
     /**
      * @var Duobac[]
      *
-     * @ORM\OneToMany(targetEntity="AcMarche\Duobac\Entity\Duobac", mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Duobac::class, mappedBy="user")
      */
-    private $duobacs;
+    private Collection $duobacs;
 
-    /**
-     * @var string|null
-     *
-     */
-    private $plain_password;
+    private ?string $plain_password = null;
 
     public function __construct()
     {
@@ -141,14 +135,14 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): void
     {
     }
 
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -178,7 +172,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRdvMatricule(): ?string
+    public function getRdvMatricule(): string
     {
         return $this->rdv_matricule;
     }
@@ -193,7 +187,7 @@ class User implements UserInterface
     /**
      * @return Collection|Duobac[]
      */
-    public function getDuobacs(): Collection
+    public function getDuobacs(): array
     {
         return $this->duobacs;
     }

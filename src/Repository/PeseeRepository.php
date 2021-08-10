@@ -2,6 +2,8 @@
 
 namespace AcMarche\Duobac\Repository;
 
+use AcMarche\Duobac\Doctrine\OrmCrudTrait;
+use DateTimeInterface;
 use AcMarche\Duobac\Entity\Pesee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,25 +16,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PeseeRepository extends ServiceEntityRepository
 {
+    use OrmCrudTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Pesee::class);
-    }
-
-    public function persist(Pesee $releve)
-    {
-        $this->_em->persist($releve);
-    }
-
-    public function flush()
-    {
-        $this->_em->flush();
-    }
-
-    public function remove(Pesee $releve)
-    {
-        $this->_em->remove($releve);
-        $this->flush();
     }
 
     /**
@@ -57,8 +45,8 @@ class PeseeRepository extends ServiceEntityRepository
     public function findByPuceAndYear(
         string $puce,
         int $year,
-        \DateTimeInterface $dateDebut = null,
-        \DateTimeInterface $dateFin = null
+        DateTimeInterface $dateDebut = null,
+        DateTimeInterface $dateFin = null
     ) {
         $builder = $this->createQueryBuilder('pesee')
             ->orderBy('pesee.date_pesee', 'ASC');
@@ -79,7 +67,7 @@ class PeseeRepository extends ServiceEntityRepository
             return $builder->getQuery()->getResult();
         }
 
-        if ($dateDebut) {
+        if ($dateDebut !== null) {
             $builder
                 ->andWhere('pesee.date_pesee > :month')
                 ->setParameter('month', $dateDebut);
@@ -87,7 +75,7 @@ class PeseeRepository extends ServiceEntityRepository
             return $builder->getQuery()->getResult();
         }
 
-        if ($dateFin) {
+        if ($dateFin !== null) {
             $builder
                 ->andWhere('pesee.date_pesee < :month')
                 ->setParameter('month', $dateFin);

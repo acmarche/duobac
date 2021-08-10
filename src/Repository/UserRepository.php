@@ -2,6 +2,7 @@
 
 namespace AcMarche\Duobac\Repository;
 
+use AcMarche\Duobac\Doctrine\OrmCrudTrait;
 use AcMarche\Duobac\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,25 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
+    use OrmCrudTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
-    }
-
-    public function insert(User $user)
-    {
-        $this->_em->persist($user);
-        $this->save();
-    }
-
-    public function save()
-    {
-        $this->_em->flush();
-    }
-
-    public function remove(User $user)
-    {
-        $this->_em->remove($user);
-        $this->save();
     }
 }

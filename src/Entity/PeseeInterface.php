@@ -8,9 +8,11 @@
 
 namespace AcMarche\Duobac\Entity;
 
+use DateTimeInterface;
+
 interface PeseeInterface
 {
-    public function getDatePesee(): \DateTimeInterface;
+    public function getDatePesee(): DateTimeInterface;
 
     public function getPoids(): float;
 
@@ -18,7 +20,7 @@ interface PeseeInterface
 
     public function getId(): ?int;
 
-    public function setDatePesee(\DateTimeInterface $date_pesee): self;
+    public function setDatePesee(DateTimeInterface $date_pesee): self;
 
     public function getACharge(): ?int;
 

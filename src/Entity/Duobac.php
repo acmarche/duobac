@@ -2,6 +2,8 @@
 
 namespace AcMarche\Duobac\Entity;
 
+use DateTimeInterface;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,49 +21,36 @@ use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 class Duobac
 {
     /**
-     * @var integer|null $id
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
      */
-    private $id;
+    private ?int $id = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=15, nullable=false)
      */
-    private $rdv_matricule;
+    private ?string $rdv_matricule;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=30, nullable=false)
      */
-    private $puc_no_puce;
+    private ?string $puc_no_puce;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="date", nullable=false)
      */
-    private $pur_date_debut;
+    private ?DateTimeInterface $pur_date_debut = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(type="date", nullable=true)
      */
-    private $pur_date_fin;
+    private ?DateTimeInterface $pur_date_fin = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=2, nullable=false)
      */
-    private $pur_cod_tarification;
+    private ?string $pur_cod_tarification = null;
 
     /**
      * @var bool
@@ -71,11 +60,9 @@ class Duobac
     private $puc_cod_capacite;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=5, nullable=true)
      */
-    private $pur_cod_clef;
+    private ?string $pur_cod_clef = null;
 
     /**
      * @var bool|null
@@ -85,92 +72,70 @@ class Duobac
     private $puc_cod_dechet;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=250, nullable=true)
      */
-    private $rdv_nom;
+    private ?string $rdv_nom = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=150, nullable=true)
      */
-    private $rdv_prenom_1;
+    private ?string $rdv_prenom_1 = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=150, nullable=false)
      */
-    private $loc_code_post;
+    private ?string $loc_code_post = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer", nullable=false)
      */
-    private $rue_code_rue;
+    private ?int $rue_code_rue = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", length=250, nullable=true)
      */
-    private $rue_lib_1lg;
+    private ?string $rue_lib_1lg = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=12, nullable=true)
      */
-    private $adr_numero;
+    private ?string $adr_numero = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=12, nullable=true)
      */
-    private $adr_indice;
+    private ?string $adr_indice = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=24, nullable=true)
      */
-    private $adr_boite;
+    private ?string $adr_boite = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer", nullable=false)
      */
-    private $rdv_cod_redevable;
+    private ?int $rdv_cod_redevable = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer", nullable=false)
      */
-    private $rdv_cod_classe;
+    private ?int $rdv_cod_classe = null;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=20, nullable=true)
      */
-    private $puc_no_conteneur;
+    private ?string $puc_no_conteneur = null;
 
     /**
      * @var Pesee[]
      */
-    private $pesees;
+    private Collection $pesees;
 
     /**
-     * @var User|null
-     * @ORM\ManyToOne(targetEntity="AcMarche\Duobac\Entity\User", inversedBy="duobacs")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="duobacs")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $user;
+    private ?User $user = null;
 
     public function __construct(string $rdv_matricule, string $puc_no_puce)
     {
@@ -189,7 +154,7 @@ class Duobac
         return $this->id;
     }
 
-    public function getRdvMatricule(): ?string
+    public function getRdvMatricule(): string
     {
         return $this->rdv_matricule;
     }
@@ -201,7 +166,7 @@ class Duobac
         return $this;
     }
 
-    public function getPucNoPuce(): ?string
+    public function getPucNoPuce(): string
     {
         return $this->puc_no_puce;
     }
@@ -213,31 +178,31 @@ class Duobac
         return $this;
     }
 
-    public function getPurDateDebut(): ?\DateTimeInterface
+    public function getPurDateDebut(): DateTime
     {
         return $this->pur_date_debut;
     }
 
-    public function setPurDateDebut(\DateTimeInterface $pur_date_debut): self
+    public function setPurDateDebut(DateTimeInterface $pur_date_debut): self
     {
         $this->pur_date_debut = $pur_date_debut;
 
         return $this;
     }
 
-    public function getPurDateFin(): ?\DateTimeInterface
+    public function getPurDateFin(): ?DateTimeInterface
     {
         return $this->pur_date_fin;
     }
 
-    public function setPurDateFin(?\DateTimeInterface $pur_date_fin): self
+    public function setPurDateFin(?DateTimeInterface $pur_date_fin): self
     {
         $this->pur_date_fin = $pur_date_fin;
 
         return $this;
     }
 
-    public function getPurCodTarification(): ?string
+    public function getPurCodTarification(): string
     {
         return $this->pur_cod_tarification;
     }
@@ -249,7 +214,7 @@ class Duobac
         return $this;
     }
 
-    public function getPucCodCapacite(): ?bool
+    public function getPucCodCapacite(): bool
     {
         return $this->puc_cod_capacite;
     }
@@ -261,7 +226,7 @@ class Duobac
         return $this;
     }
 
-    public function getPurCodClef(): ?string
+    public function getPurCodClef(): string
     {
         return $this->pur_cod_clef;
     }
@@ -285,7 +250,7 @@ class Duobac
         return $this;
     }
 
-    public function getRdvNom(): ?string
+    public function getRdvNom(): string
     {
         return $this->rdv_nom;
     }
@@ -297,7 +262,7 @@ class Duobac
         return $this;
     }
 
-    public function getRdvPrenom1(): ?string
+    public function getRdvPrenom1(): string
     {
         return $this->rdv_prenom_1;
     }
@@ -309,7 +274,7 @@ class Duobac
         return $this;
     }
 
-    public function getLocCodePost(): ?string
+    public function getLocCodePost(): string
     {
         return $this->loc_code_post;
     }
@@ -321,7 +286,7 @@ class Duobac
         return $this;
     }
 
-    public function getRueCodeRue(): ?int
+    public function getRueCodeRue(): int
     {
         return $this->rue_code_rue;
     }
@@ -345,7 +310,7 @@ class Duobac
         return $this;
     }
 
-    public function getAdrNumero(): ?string
+    public function getAdrNumero(): string
     {
         return $this->adr_numero;
     }
@@ -357,7 +322,7 @@ class Duobac
         return $this;
     }
 
-    public function getAdrIndice(): ?string
+    public function getAdrIndice(): string
     {
         return $this->adr_indice;
     }
@@ -369,7 +334,7 @@ class Duobac
         return $this;
     }
 
-    public function getAdrBoite(): ?string
+    public function getAdrBoite(): string
     {
         return $this->adr_boite;
     }
@@ -381,7 +346,7 @@ class Duobac
         return $this;
     }
 
-    public function getRdvCodRedevable(): ?int
+    public function getRdvCodRedevable(): int
     {
         return $this->rdv_cod_redevable;
     }
@@ -393,7 +358,7 @@ class Duobac
         return $this;
     }
 
-    public function getRdvCodClasse(): ?int
+    public function getRdvCodClasse(): int
     {
         return $this->rdv_cod_classe;
     }
@@ -420,7 +385,7 @@ class Duobac
     /**
      * @return Collection|Pesee[]
      */
-    public function getPesees(): Collection
+    public function getPesees(): array
     {
         return $this->pesees;
     }
@@ -443,7 +408,7 @@ class Duobac
         return $this;
     }
 
-    public function getPucNoConteneur(): ?string
+    public function getPucNoConteneur(): string
     {
         return $this->puc_no_conteneur;
     }

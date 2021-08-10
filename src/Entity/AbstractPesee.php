@@ -2,45 +2,34 @@
 
 namespace AcMarche\Duobac\Entity;
 
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- *
- *
- */
 abstract class AbstractPesee implements PeseeInterface
 {
     /**
-     * @var integer|null $id
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
      */
-    protected $id;
+    protected ?int $id = null;
 
     /**
-     * @var \DateTime|null
-     *
      * @ORM\Column(type="date", nullable=false)
      */
-    protected $date_pesee;
+    protected ?DateTimeInterface $date_pesee = null;
 
     /**
-     * @var float|null
-     *
      * @ORM\Column(type="decimal", precision=6, scale=2, nullable=false)
      */
-    protected $poids;
+    protected ?float $poids = null;
 
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer", length=6, nullable=false)
      */
-    protected $a_charge;
+    protected ?int $a_charge = null;
 
     public function __get($prop)
     {
@@ -52,7 +41,7 @@ abstract class AbstractPesee implements PeseeInterface
         return isset($this->$prop);
     }
 
-    public function getDatePesee(): \DateTimeInterface
+    public function getDatePesee(): DateTimeInterface
     {
         return $this->date_pesee;
     }
@@ -74,7 +63,7 @@ abstract class AbstractPesee implements PeseeInterface
         return $this->id;
     }
 
-    public function setDatePesee(\DateTimeInterface $date_pesee): PeseeInterface
+    public function setDatePesee(DateTimeInterface $date_pesee): PeseeInterface
     {
         $this->date_pesee = $date_pesee;
 

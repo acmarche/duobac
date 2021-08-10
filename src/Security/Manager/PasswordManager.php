@@ -13,10 +13,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordManager
 {
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $userPasswordEncoder;
+    private UserPasswordEncoderInterface $userPasswordEncoder;
 
     public function __construct(
         UserPasswordEncoderInterface $userPasswordEncoder
@@ -24,20 +21,20 @@ class PasswordManager
         $this->userPasswordEncoder = $userPasswordEncoder;
     }
 
-    public function generateNewPassword(User $user)
+    public function generateNewPassword(User $user): void
     {
         $password = $this->generatePassword();
         $user->setPlainPassword($password);
     }
 
-    public function changePassword(User $user, string $plainPassword)
+    public function changePassword(User $user, string $plainPassword): void
     {
         $passwordCrypted = $this->userPasswordEncoder->encodePassword($user, $plainPassword);
         $user->setPassword($passwordCrypted);
         $user->setPlainPassword($plainPassword);//pour envoie par mail
     }
 
-    public function generatePassword()
+    public function generatePassword(): string
     {
         $password = '';
 

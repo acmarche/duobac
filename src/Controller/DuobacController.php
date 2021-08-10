@@ -4,9 +4,9 @@ namespace AcMarche\Duobac\Controller;
 
 use AcMarche\Duobac\Manager\DuobacManager;
 use AcMarche\Duobac\Manager\SituationManager;
-use AcMarche\Duobac\Repository\DuobacRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -17,25 +17,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DuobacController extends AbstractController
 {
-    /**
-     * @var DuobacRepository
-     */
-    private $duobacRepository;
-    /**
-     * @var DuobacManager
-     */
-    private $duobacManager;
-    /**
-     * @var SituationManager
-     */
-    private $situationManager;
+    private DuobacManager $duobacManager;
+    private SituationManager $situationManager;
 
     public function __construct(
-        DuobacRepository $duobacRepository,
         DuobacManager $duobacManager,
         SituationManager $situationManager
     ) {
-        $this->duobacRepository = $duobacRepository;
         $this->duobacManager = $duobacManager;
         $this->situationManager = $situationManager;
     }
@@ -44,7 +32,7 @@ class DuobacController extends AbstractController
      * @Route("/",name="duobac_list")
      *
      */
-    public function index()
+    public function index(): Response
     {
         $matricule = $this->getUser()->getRdvMatricule();
         $duobacs = $this->duobacManager->getDuobacsByUser($this->getUser());

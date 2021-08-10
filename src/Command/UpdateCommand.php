@@ -14,22 +14,10 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class UpdateCommand extends Command
 {
     protected static $defaultName = 'duobac:update';
-    /**
-     * @var ImportManager
-     */
-    private $importManager;
-    /**
-     * @var ParameterBagInterface
-     */
-    private $parameterBag;
-    /**
-     * @var array
-     */
-    private $types = ['duobac', 'moyenne'];
-    /**
-     * @var MoyenneManager
-     */
-    private $moyenneManager;
+    private ImportManager $importManager;
+    private ParameterBagInterface $parameterBag;
+    private array $types = ['duobac', 'moyenne'];
+    private MoyenneManager $moyenneManager;
 
     public function __construct(
         ImportManager $importManager,
@@ -42,7 +30,7 @@ class UpdateCommand extends Command
         $this->moyenneManager = $moyenneManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Mise à jour des releves')
@@ -57,7 +45,7 @@ class UpdateCommand extends Command
         $type = $input->getArgument('type');
 
         if (!in_array($type, $this->types)) {
-            $io->error(sprintf('Erreur pour le type, les choix possibles sont: '.implode(',', $this->types)));
+            $io->error('Erreur pour le type, les choix possibles sont: '.implode(',', $this->types));
 
             return 1;
         }

@@ -26,14 +26,11 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator
 {
     use TargetPathTrait;
 
-    private $entityManager;
-    private $router;
-    private $csrfTokenManager;
-    private $passwordEncoder;
-    /**
-     * @var UserManager
-     */
-    private $userManager;
+    private EntityManagerInterface $entityManager;
+    private RouterInterface $router;
+    private CsrfTokenManagerInterface $csrfTokenManager;
+    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserManager $userManager;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -49,13 +46,13 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator
         $this->userManager = $userManager;
     }
 
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return 'app_login' === $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
 
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): array
     {
         $credentials = [
             'rrn' => StringUtils::removeChars($request->request->get('rrn')),
@@ -70,7 +67,7 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator
         return $credentials;
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): User
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
@@ -84,26 +81,26 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator
             ['rdv_matricule' => $credentials['rrn'], 'puc_no_puce' => $credentials['puce']]
         );
 
-        if (!$duobac) {
+        if ($duobac === null) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Aucun duobac trouvé.');
         }
 
-        if (!$user = $this->entityManager->getRepository(User::class)->findOneBy(
+        if (($user = $this->entityManager->getRepository(User::class)->findOneBy(
             ['rdv_matricule' => $credentials['rrn']]
-        )) {
+        )) === null) {
             $user = $this->userManager->newFromDuobac($duobac);
         }
 
         return $user;
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         return true;
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): RedirectResponse
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
@@ -112,7 +109,7 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator
         return new RedirectResponse($this->router->generate('duobac_home'));
     }
 
-    protected function getLoginUrl()
+    protected function getLoginUrl(): string
     {
         return $this->router->generate('app_login');
     }

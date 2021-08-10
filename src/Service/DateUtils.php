@@ -8,18 +8,21 @@
 
 namespace AcMarche\Duobac\Service;
 
+use DateTimeInterface;
+use Exception;
+use DateTimeImmutable;
 class DateUtils
 {
     /**
      * @param string $date
      * @param string $format
-     * @return bool|\DateTimeInterface
-     * @throws \Exception
+     * @return bool|DateTimeInterface
+     * @throws Exception
      */
-    public function convertStringToDateTime(string $date, $format = 'd/m/Y')
+    public function convertStringToDateTime(string $date, $format = 'd/m/Y'): DateTimeImmutable
     {
-        if (!$dateTime = \DateTimeImmutable::createFromFormat($format, $date)) {
-            throw new \Exception("Date $date n'a pas pu être convertie en DateTime, format: ".$format);
+        if (!$dateTime = DateTimeImmutable::createFromFormat($format, $date)) {
+            throw new Exception("Date $date n'a pas pu être convertie en DateTime, format: ".$format);
         }
 
         return $dateTime;
@@ -45,7 +48,7 @@ class DateUtils
         return isset($months[$numMonth]) ? $months[$numMonth] : $numMonth;
     }
 
-    public static function getListeNumeroMoisWith2digits()
+    public static function getListeNumeroMoisWith2digits(): array
     {
         $mois = range(1, 12);
 
@@ -56,12 +59,12 @@ class DateUtils
 
         return $mois;
     }
-    public static function getListeNumeroMoisWithOnedigit()
+    public static function getListeNumeroMoisWithOnedigit(): array
     {
         return $mois = range(1, 12);
     }
 
-    public static function getNumeroMois(\DateTimeInterface $dateTime)
+    public static function getNumeroMois(DateTimeInterface $dateTime): string
     {
         return $dateTime->format('m');
     }

@@ -9,17 +9,14 @@ use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 
 class SituationManager
 {
-    /**
-     * @var SituationFamilialeRepository
-     */
-    private $situationFamilialeRepository;
+    private SituationFamilialeRepository $situationFamilialeRepository;
 
     public function __construct(SituationFamilialeRepository $situationFamilialeRepository)
     {
         $this->situationFamilialeRepository = $situationFamilialeRepository;
     }
 
-    public function getAllYears(User $user)
+    public function getAllYears(User $user): array
     {
         $matricule = $user->getRdvMatricule();
         $years = [];
@@ -36,7 +33,7 @@ class SituationManager
      * @param int $year
      * @return SituationFamiliale[]|array
      */
-    public function getSituationsByMatriculeAndYear(string $matricule, int $year)
+    public function getSituationsByMatriculeAndYear(string $matricule, int $year): array
     {
         return $this->situationFamilialeRepository->findByMatriculeAndYear($matricule, $year);
     }
@@ -44,9 +41,8 @@ class SituationManager
     /**
      * @param string $matricule
      * @param int $year
-     * @return int
      */
-    public function getChargeByMatriculeAndYear(string $matricule, int $year)
+    public function getChargeByMatriculeAndYear(string $matricule, int $year): ?int
     {
         $situations = $this->getSituationsByMatriculeAndYear($matricule, $year);
 
@@ -57,7 +53,7 @@ class SituationManager
      * @param string $matricule
      * @return SituationFamiliale[]|array
      */
-    public function getSituationsByMatricule(string $matricule)
+    public function getSituationsByMatricule(string $matricule): array
     {
         return $this->situationFamilialeRepository->findByMatricule($matricule);
     }

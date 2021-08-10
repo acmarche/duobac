@@ -2,6 +2,7 @@
 
 namespace AcMarche\Duobac\Repository;
 
+use AcMarche\Duobac\Doctrine\OrmCrudTrait;
 use AcMarche\Duobac\Entity\Duobac;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,24 +15,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class DuobacRepository extends ServiceEntityRepository
 {
+    use OrmCrudTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Duobac::class);
-    }
-
-    public function persist(Duobac $duobac)
-    {
-        $this->_em->persist($duobac);
-    }
-
-    public function flush()
-    {
-        $this->_em->flush();
-    }
-
-    public function remove(Duobac $duobac)
-    {
-        $this->_em->remove($duobac);
-        $this->flush();
     }
 }

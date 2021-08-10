@@ -8,6 +8,11 @@
 
 namespace AcMarche\Duobac\Service;
 
+use Khill\Lavacharts\Exceptions\InvalidCellCount;
+use Khill\Lavacharts\Exceptions\InvalidColumnType;
+use Khill\Lavacharts\Exceptions\InvalidLabel;
+use Khill\Lavacharts\Exceptions\InvalidRowDefinition;
+use Khill\Lavacharts\Exceptions\InvalidRowProperty;
 use AcMarche\Duobac\Entity\PeseeInterface;
 use Khill\Lavacharts\Lavacharts;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -15,10 +20,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class ChartHelper
 {
-    /**
-     * @var ChartBuilderInterface
-     */
-    private $chartBuilder;
+    private ChartBuilderInterface $chartBuilder;
 
     public function __construct(ChartBuilderInterface $chartBuilder)
     {
@@ -58,14 +60,13 @@ class ChartHelper
 
     /**
      * @param array $data
-     * @return Lavacharts
-     * @throws \Khill\Lavacharts\Exceptions\InvalidCellCount
-     * @throws \Khill\Lavacharts\Exceptions\InvalidColumnType
-     * @throws \Khill\Lavacharts\Exceptions\InvalidLabel
-     * @throws \Khill\Lavacharts\Exceptions\InvalidRowDefinition
-     * @throws \Khill\Lavacharts\Exceptions\InvalidRowProperty
+     * @throws InvalidCellCount
+     * @throws InvalidColumnType
+     * @throws InvalidLabel
+     * @throws InvalidRowDefinition
+     * @throws InvalidRowProperty
      */
-    public function createForAllYears(array $data)
+    public function createForAllYears(array $data): Lavacharts
     {
         $lavacharts = self::getInstance();
         $stocksTable = $lavacharts->DataTable();
@@ -114,14 +115,13 @@ class ChartHelper
     /**
      * @param iterable|PeseeInterface[] $pesees
      * @param int $year
-     * @return Lavacharts
-     * @throws \Khill\Lavacharts\Exceptions\InvalidCellCount
-     * @throws \Khill\Lavacharts\Exceptions\InvalidColumnType
-     * @throws \Khill\Lavacharts\Exceptions\InvalidLabel
-     * @throws \Khill\Lavacharts\Exceptions\InvalidRowDefinition
-     * @throws \Khill\Lavacharts\Exceptions\InvalidRowProperty
+     * @throws InvalidCellCount
+     * @throws InvalidColumnType
+     * @throws InvalidLabel
+     * @throws InvalidRowDefinition
+     * @throws InvalidRowProperty
      */
-    public function createByYear(iterable $pesees, int $year)
+    public function createByYear(iterable $pesees, int $year): Lavacharts
     {
         $lava = self::getInstance();
         $stocksTable = $lava->DataTable();
