@@ -31,7 +31,7 @@ class UserRepository extends ServiceEntityRepository
     public function loadUserByIdentifier(string $username): ?UserInterface
     {
         return $this->createQueryBuilder('user')
-            ->andWhere('user.email = :username OR user.username2 = :username')
+            ->andWhere('user.rdv_matricule = :username')
             ->setParameter('username', $username)
             ->getQuery()
             ->getOneOrNullResult();

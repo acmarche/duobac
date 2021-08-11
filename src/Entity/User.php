@@ -67,6 +67,11 @@ class User implements UserInterface
         return (string)$this->rdv_matricule;
     }
 
+    public function getUserIdentifier(): string
+    {
+        return (string)$this->rdv_matricule;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -73,9 +73,7 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
             ];
 
         $credentials = new CustomCredentials(function ($credentials, UserInterface $user) {
-            dump($user);
-
-            return $user->getApiToken() === $credentials;
+            return $user->getUserIdentifier() === $credentials;
         }, $email);
 
         $duobacBage = new DuobacBadge(

@@ -11,6 +11,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\BadgeInterface;
 use Symfony\Component\Security\Http\EventListener\UserProviderListener;
 
+/**
+ * DuobacBadge à la place de UserBadge car ne permet que un parametre
+ * ici j'en ai deux rrn, puce
+ */
 class DuobacBadge implements BadgeInterface
 {
     private string $userIdentifier;
@@ -36,6 +40,7 @@ class DuobacBadge implements BadgeInterface
         $this->userLoader = $userLoader;
         $this->puce = $puce;
         $this->duobacLoader = $duobacLoader;
+        $this->duobac = null;
     }
 
     public function getUserIdentifier(): string
