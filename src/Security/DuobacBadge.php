@@ -112,6 +112,12 @@ class DuobacBadge implements BadgeInterface
         return $this->user;
     }
 
+    /**
+     * todo sortir de badge
+     * todo dans onAuthenticationFailure ?
+     * @param \AcMarche\Duobac\Entity\Duobac $duobac
+     * @return \AcMarche\Duobac\Entity\User
+     */
     private function newFromDuobac(Duobac $duobac): User
     {
         $user = new User();

@@ -1,18 +1,7 @@
-{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-    <li class="nav-item{% if action == 'duobac_index' %} active{% endif %}">
-        <a class="nav-link" href="{{ path('duobac_list') }}">
-            Mes duobacs
-        </a>
-    </li>
-
-    {{ render(controller(
-        'AcMarche\\Duobac\\Controller\\DefaultController::menuUser',
-        { 'max': 3 }
-    )) }}
-
-{% endif %}
-<li class="nav-item{% if action == 'duobac_contact' %} active{% endif %}">
-    <a class="nav-link" href="{{ path('duobac_contact') }}">
-        Contact
-    </a>
-</li>
+<ul class="nav nav-pills">
+    <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
+    <li class="nav-item"><a href="{{ path('duobac_list') }}" class="nav-link">Mes duobacs</a></li>
+    <li class="nav-item"><a href="{{ path('duobac_contact') }}" class="nav-link">Pesées</a></li>
+    <li class="nav-item"><a href="{{ path('duobac_contact') }}" class="nav-link">Contact</a></li>
+    <li class="nav-item"><a href="{{ path('app_logout') }}" class="nav-link">{{ app.user }}</a></li>
+</ul>
