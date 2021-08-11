@@ -2,15 +2,12 @@
 
 {% block body %}
 
-    <h3>Pesées pour l'année {{ year }}</h3>
-
-  {#  {{ render_chart(chart) }}#}
-    <div id="line-chart{{ year }}"></div>
-    <div id="column-chart{{ year }}"></div>
-
-    {{ graph1|raw }}
-    {#{ graph2|raw }#}
-
-    {% include '@AcMarcheDuobac/pesee/_tableau.html.twig' %}
+    <div class="card">
+        <h3 class="card-header">Pesées pour l'année {{ year }}</h3>
+        <div class="card-body">
+            {{ render_chart(chart) }}
+        {# {% include '@AcMarcheDuobac/pesee/_tableau.html.twig' %} #}
+        </div>
+    </div>
 
 {% endblock %}

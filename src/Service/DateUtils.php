@@ -28,10 +28,9 @@ class DateUtils
         return $dateTime;
     }
 
-    public static function getTitleMonth($numMonth)
-    {
-        $months = [
-            1 => 'Janvier',
+    public static function getAllMonths() {
+        return [
+            0 => 'Janvier',
             'Février',
             'Mars',
             'Avril',
@@ -44,6 +43,10 @@ class DateUtils
             'Novembre',
             'Décembre',
         ];
+    }
+    public static function getTitleMonth($numMonth)
+    {
+        $months = self::getAllMonths();
 
         return isset($months[$numMonth]) ? $months[$numMonth] : $numMonth;
     }

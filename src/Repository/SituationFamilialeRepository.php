@@ -4,6 +4,7 @@ namespace AcMarche\Duobac\Repository;
 
 use AcMarche\Duobac\Doctrine\OrmCrudTrait;
 use AcMarche\Duobac\Entity\SituationFamiliale;
+use AcMarche\Duobac\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -54,22 +55,33 @@ class SituationFamilialeRepository extends ServiceEntityRepository
         return $builder->getQuery()->getResult();
     }
 
-    /**
-     * @param string $rdvMatricule
-     * @param int $year
-     * @return SituationFamiliale[]
-     */
-    public function findByMatriculeAndYear(string $rdvMatricule, int $year): array
+    public function getAllYears(User $user): array
     {
-        $builder = $this->createQueryBuilder('situation_familiale');
+        $matricule = $user->getRdvMatricule();
+        $years = [];
+        $situations = $this->findByMatricule($matricule);
+        foreach ($situations as $situation) {
+            $years[] = $situation->getAnnee();
+        }
 
-        $builder
+        return array_unique($years);
+    }
+
+    public function getChargeByMatriculeAndYear($rdvMatricule, $year): int
+    {
+        $builder = $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.annee = :annee')
             ->setParameter('annee', $year)
             ->andWhere('situation_familiale.rdv_matricule = :matricule')
             ->setParameter('matricule', $rdvMatricule)
             ->orderBy('situation_familiale.a_charge', 'ASC');
 
-        return $builder->getQuery()->getResult();
+        $situation = $builder->getQuery()->getOneOrNullResult();
+
+        if ($situation) {
+            return $situation->getCharge();
+        }
+
+        return 0;
     }
 }

@@ -8,17 +8,18 @@
 
 namespace AcMarche\Duobac\Manager;
 
-use DateTimeInterface;
-use Exception;
-use DateTime;
-use DateTimeImmutable;
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\PeseeMoyenne;
+use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
 use AcMarche\Duobac\Repository\PeseeRepository;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use AcMarche\Duobac\Service\DateUtils;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MoyenneManager
@@ -28,32 +29,33 @@ class MoyenneManager
     private SituationFamilialeRepository $situationFamilialeRepository;
     private DateUtils $dateUtils;
     private ?SymfonyStyle $io = null;
-    private DuobacManager $duobacManager;
+    private DuobacRepository $duobacRepository;
 
     public function __construct(
         PeseeMoyenneRepository $moyenneRepository,
         PeseeRepository $peseeRepository,
+        DuobacRepository $duobacRepository,
         SituationFamilialeRepository $situationFamilialeRepository,
-        DateUtils $dateUtils,
-        DuobacManager $duobacManager
+        DateUtils $dateUtils
     ) {
         $this->moyenneRepository = $moyenneRepository;
         $this->peseeRepository = $peseeRepository;
         $this->situationFamilialeRepository = $situationFamilialeRepository;
         $this->dateUtils = $dateUtils;
-        $this->duobacManager = $duobacManager;
+        $this->duobacRepository = $duobacRepository;
     }
 
     public function execute(int $year): void
     {
-        $duobacs = $this->duobacManager->getDuobacsCitoyens();
-        $puces = $this->duobacManager->getPucesCitoyensByDuobacs($duobacs);
+        $duobacs = $this->duobacRepository->getDuobacsCitoyens();
+        $puces = $this->duobacRepository->getPucesCitoyensByDuobacs($duobacs);
         $this->updateMoyenne($puces, $year);
     }
 
     public function getInstance(string $charge, DateTimeInterface $dateTime): PeseeMoyenne
     {
-        if (($moyenne = $this->moyenneRepository->findOneBy(['date_pesee' => $dateTime, 'a_charge' => $charge])) === null) {
+        if (($moyenne = $this->moyenneRepository->findOneBy(['date_pesee' => $dateTime, 'a_charge' => $charge]
+            )) === null) {
             $moyenne = new PeseeMoyenne();
             $moyenne->setDatePesee($dateTime);
             $moyenne->setACharge($charge);
@@ -72,9 +74,9 @@ class MoyenneManager
         $charges = $this->situationFamilialeRepository->getListeCharges();
 
         foreach ($charges as $charge) {
-            $this->io->title('A charge ' . $charge['a_charge']);
+            $this->io->title('A charge '.$charge['a_charge']);
             foreach (DateUtils::getListeNumeroMoisWith2digits() as $mois) {
-                $yearMonth = $year . "-" . $mois;
+                $yearMonth = $year."-".$mois;
                 $this->io->writeln($yearMonth);
 
                 $pesees = $this->peseeRepository->getPeseesByChargeByYearMonth($puces, $charge['a_charge'], $yearMonth);
@@ -83,20 +85,20 @@ class MoyenneManager
                 if ($count > 0) {
                     foreach ($pesees as $pesee) {
                         $poids = $pesee->getPoids();
-                    //    $this->io->writeln($poids);
+                        //    $this->io->writeln($poids);
                         $total += $poids;
                     }
                     $moyenne = $total / $count;
                 }
                 //$io->writeln($total.' / '.$count);
                 //$io->writeln($moyenne);
-                $date = $this->dateUtils->convertStringToDateTime($yearMonth . '-01', 'Y-m-d');
+                $date = $this->dateUtils->convertStringToDateTime($yearMonth.'-01', 'Y-m-d');
 
                 $peseeMoyenne = $this->getInstance($charge['a_charge'], $date);
                 $peseeMoyenne->setPoids($moyenne);
             }
         }
-          $this->moyenneRepository->flush();
+        $this->moyenneRepository->flush();
     }
 
     /**

@@ -8,39 +8,34 @@
 
 namespace AcMarche\Duobac\Manager;
 
-use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
 use AcMarche\Duobac\Entity\Duobac;
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\SituationFamiliale;
+use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
-use Symfony\Component\Serializer\Encoder\CsvEncoder;
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 class ImportManager
 {
     private string $format = 'd/m/Y';
-
-    private DuobacManager $duobacManager;
-    private PeseeManager $peseeManager;
     private SituationFamilialeRepository $situationFamilialeRepository;
+    private DuobacRepository $duobacRepository;
 
     public function __construct(
-        DuobacManager $duobacManager,
-        PeseeManager $peseeManager,
+        DuobacRepository $duobacRepository,
         SituationFamilialeRepository $situationFamilialeRepository
     ) {
-        $this->duobacManager = $duobacManager;
-        $this->peseeManager = $peseeManager;
         $this->situationFamilialeRepository = $situationFamilialeRepository;
+        $this->duobacRepository = $duobacRepository;
     }
 
     public function updateSituationFamiliale(string $matricule, string $puce, int $year, int $aCharge): void
     {
         if (($situationFamiliale = $this->situationFamilialeRepository->findOneBy(
-            ['rdv_matricule' => $matricule, 'annee' => $year]
-        )) === null) {
+                ['rdv_matricule' => $matricule, 'annee' => $year]
+            )) === null) {
             $situationFamiliale = new SituationFamiliale($matricule, $puce, $year, $aCharge);
             $this->situationFamilialeRepository->persist($situationFamiliale);
         }
@@ -76,9 +71,9 @@ class ImportManager
         $codeClef = (int)($data[18]);
         $codeDechet = (int)($data[19]);
 
-        if (($duobac = $this->duobacManager->getDuobacByMatriculeAndPuce($matricule, $puce)) === null) {
+        if (($duobac = $this->duobacRepository->findOneByMatriculeAndPuce($matricule, $puce)) === null) {
             $duobac = new Duobac($matricule, $puce);
-            $this->duobacManager->persist($duobac);
+            $this->duobacRepository->persist($duobac);
         }
 
         $duobac->setRdvNom(utf8_encode($nom));
@@ -103,7 +98,7 @@ class ImportManager
         $duobac->setPurCodClef($codeClef);
         $duobac->setPucCodDechet($codeDechet);
 
-        $this->duobacManager->flush();
+        $this->duobacRepository->flush();
 
         $this->updateSituationFamiliale($matricule, $puce, $year, $aCharge);
         $i = 20;
@@ -122,7 +117,7 @@ class ImportManager
                 $i += 1;
             }
         }
-        $this->peseeManager->flush();
+        $this->duobacRepository->flush();
     }
 
     function getLines($file): iterable
@@ -143,7 +138,7 @@ class ImportManager
     public function insertReleve(string $puce, DateTimeInterface $date, float $poid, int $acharge): void
     {
         $pesee = new Pesee($puce, $date, $poid, $acharge);
-        $this->peseeManager->persist($pesee);
+        $this->duobacRepository->persist($pesee);
     }
 
     public function skip($matricule): bool

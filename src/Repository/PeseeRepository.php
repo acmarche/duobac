@@ -3,8 +3,9 @@
 namespace AcMarche\Duobac\Repository;
 
 use AcMarche\Duobac\Doctrine\OrmCrudTrait;
-use DateTimeInterface;
 use AcMarche\Duobac\Entity\Pesee;
+use AcMarche\Duobac\Entity\PeseeInterface;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,7 +48,7 @@ class PeseeRepository extends ServiceEntityRepository
         int $year,
         DateTimeInterface $dateDebut = null,
         DateTimeInterface $dateFin = null
-    ) {
+    ): array {
         $builder = $this->createQueryBuilder('pesee')
             ->orderBy('pesee.date_pesee', 'ASC');
 
@@ -123,5 +124,37 @@ class PeseeRepository extends ServiceEntityRepository
             ->addGroupBy("year");
 
         return $builder->getQuery()->getResult();
+    }
+
+    /**
+     * @param string $rdvMatricule
+     * @param int $year
+     * @return PeseeInterface[]
+     */
+    public function getByMatriculeAndYear(string $rdvMatricule, int $year): array
+    {
+        $situations = $this->situationFamilialeRepository->findByMatriculeAndYear($rdvMatricule, $year);
+
+        $pesees = [[]];
+        foreach ($situations as $situation) {
+            $puce = $situation->getPucNoPuce();
+            $duobac = $this->duobacRepository->findOneByMatriculeAndPuce($rdvMatricule, $puce);
+
+            $dateFin = $duobac->getPurDateFin();
+            $dateDebut = $duobac->getPurDateDebut();
+            $contrainteDebut = $contrainteFin = null;
+
+            if ($dateDebut && (int)$dateDebut->format('Y') === $year) {
+                $contrainteDebut = $dateDebut;
+            }
+
+            if ($dateFin && (int)$dateFin->format('Y') === $year) {
+                $contrainteFin = $dateFin;
+            }
+
+            $pesees[] = $this->findByPuceAndYear($puce, $year, $contrainteDebut, $contrainteFin);
+        }
+
+        return array_merge(...$pesees);
     }
 }

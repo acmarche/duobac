@@ -2,8 +2,8 @@
 
 namespace AcMarche\Duobac\Controller;
 
-use AcMarche\Duobac\Manager\DuobacManager;
-use AcMarche\Duobac\Manager\SituationManager;
+use AcMarche\Duobac\Repository\DuobacRepository;
+use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,15 +17,15 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DuobacController extends AbstractController
 {
-    private DuobacManager $duobacManager;
-    private SituationManager $situationManager;
+    private DuobacRepository $duobacRepository;
+    private SituationFamilialeRepository $situationFamilialeRepository;
 
     public function __construct(
-        DuobacManager $duobacManager,
-        SituationManager $situationManager
+        DuobacRepository $duobacRepository,
+        SituationFamilialeRepository $situationFamilialeRepository
     ) {
-        $this->duobacManager = $duobacManager;
-        $this->situationManager = $situationManager;
+        $this->duobacRepository = $duobacRepository;
+        $this->situationFamilialeRepository = $situationFamilialeRepository;
     }
 
     /**
@@ -35,10 +35,8 @@ class DuobacController extends AbstractController
     public function index(): Response
     {
         $matricule = $this->getUser()->getRdvMatricule();
-        $duobacs = $this->duobacManager->getDuobacsByUser($this->getUser());
-        $situations = $this->situationManager->getSituationsByMatricule(
-            $matricule
-        );
+        $duobacs = $this->duobacRepository->findOneByMatricule($matricule);
+        $situations = $this->situationFamilialeRepository->findByMatricule($matricule);
 
         $coordonnees = $duobacs[0] ?? null;
 

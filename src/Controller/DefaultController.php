@@ -2,51 +2,26 @@
 
 namespace AcMarche\Duobac\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use AcMarche\Duobac\Manager\SituationManager;
+use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 
 class DefaultController extends AbstractController
 {
-    private SituationManager $situationManager;
+    private SituationFamilialeRepository $situationFamilialeRepository;
 
-    public function __construct(SituationManager $situationManager)
+    public function __construct(SituationFamilialeRepository $situationFamilialeRepository)
     {
-        $this->situationManager = $situationManager;
+        $this->situationFamilialeRepository = $situationFamilialeRepository;
     }
 
     /**
      * @Route("/",name="duobac_home")
-     *
      */
-    public function index(ChartBuilderInterface $chartBuilder): Response
+    public function index(): Response
     {
-        $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
-        $chart->setData([
-            'labels' => ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            'datasets' => [
-                [
-                    'label' => 'My First dataset',
-                    'backgroundColor' => 'rgb(255, 99, 132)',
-                    'borderColor' => 'rgb(255, 99, 132)',
-                    'data' => [0, 10, 5, 2, 20, 30, 45],
-                ],
-            ],
-        ]);
-
-        $chart->setOptions([
-            'scales' => [
-                'yAxes' => [
-                    ['ticks' => ['min' => 0, 'max' => 100]],
-                ],
-            ],
-        ]);
-
         return $this->render('@AcMarcheDuobac/default/index.html.twig', [
-            'chart' => $chart,
         ]);
     }
 
@@ -65,7 +40,7 @@ class DefaultController extends AbstractController
         $years = [];
 
         if ($user) {
-            $years = $this->situationManager->getAllYears($user);
+            $years = $this->situationFamilialeRepository->getAllYears($user);
         }
 
         return $this->render(

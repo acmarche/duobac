@@ -6,8 +6,9 @@
         <div class="card-body">
             {% if not is_granted('ROLE_DUOBAC') %}
                 <a href="{{ path('app_login') }}">Connectez vous pour consulter vos pesées</a>
+            {% else %}
+                <p>Sélectionnez dans le menu</p>
             {% endif %}
-            {{ render_chart(chart) }}
         </div>
     </div>
 {% endblock %}

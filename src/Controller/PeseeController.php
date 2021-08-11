@@ -2,12 +2,14 @@
 
 namespace AcMarche\Duobac\Controller;
 
-use AcMarche\Duobac\Manager\DuobacManager;
+use AcMarche\Duobac\Chart\ChartHelper;
+use AcMarche\Duobac\Manager\DuobacFactory;
 use AcMarche\Duobac\Manager\MoyenneManager;
-use AcMarche\Duobac\Manager\PeseeManager;
-use AcMarche\Duobac\Manager\SituationManager;
+use AcMarche\Duobac\Manager\PeseeUtils;
+use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
-use AcMarche\Duobac\Service\ChartHelper;
+use AcMarche\Duobac\Repository\PeseeRepository;
+use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use Exception;
 use Khill\Lavacharts\Exceptions\InvalidCellCount;
 use Khill\Lavacharts\Exceptions\InvalidColumnType;
@@ -28,38 +30,40 @@ use Symfony\Component\Routing\Annotation\Route;
 class PeseeController extends AbstractController
 {
     private PeseeMoyenneRepository $peseeMoyenneRepository;
-    private PeseeManager $peseeManager;
+    private PeseeUtils $peseeManager;
     private ChartHelper $chartHelper;
-    private DuobacManager $duobacManager;
-    private SituationManager $situationManager;
     private MoyenneManager $moyenneManager;
+    private DuobacRepository $duobacRepository;
+    private SituationFamilialeRepository $situationFamilialeRepository;
+    private PeseeRepository $peseeRepository;
 
     public function __construct(
-        DuobacManager $duobacManager,
-        SituationManager $situationManager,
-        PeseeManager $peseeManager,
+        PeseeUtils $peseeManager,
         ChartHelper $chartHelper,
         PeseeMoyenneRepository $peseeMoyenneRepository,
-        MoyenneManager $moyenneManager
+        DuobacRepository $duobacRepository,
+        MoyenneManager $moyenneManager,
+        SituationFamilialeRepository $situationFamilialeRepository,
+        PeseeRepository $peseeRepository
     ) {
         $this->peseeMoyenneRepository = $peseeMoyenneRepository;
         $this->peseeManager = $peseeManager;
         $this->chartHelper = $chartHelper;
-        $this->duobacManager = $duobacManager;
-        $this->situationManager = $situationManager;
         $this->moyenneManager = $moyenneManager;
+        $this->duobacRepository = $duobacRepository;
+        $this->situationFamilialeRepository = $situationFamilialeRepository;
+        $this->peseeRepository = $peseeRepository;
     }
 
     /**
-     * @Route("/all",name="duobac_pesee_all")
-     *
+     * @Route("/all/year",name="duobac_pesee_all")
      */
     public function all(): Response
     {
         $user = $this->getUser();
         $rdvMatricule = $user->getRdvMatricule();
 
-        $duobacs = $this->duobacManager->getDuobacsByUser($user);
+        $duobacs = $this->duobacRepository->findOneByMatricule($user->getRdvMatricule());
 
         if (count($duobacs) == 0) {
             $this->addFlash('danger', 'Aucun duobac trouvé');
@@ -67,16 +71,16 @@ class PeseeController extends AbstractController
             return $this->redirectToRoute('duobac_home');
         }
 
-        $years = $this->situationManager->getAllYears($user);
+        $years = $this->situationFamilialeRepository->getAllYears($user);
 
         $data = [];
 
         foreach ($years as $year) {
-            $pesees = $this->peseeManager->getByMatriculeAndYear($rdvMatricule, $year);
+            $pesees = $this->peseeRepository->getByMatriculeAndYear($rdvMatricule, $year);
             $totalUser = $this->peseeManager->getTotal($pesees);
             $data[$year]['user'] = $totalUser;
 
-            $charge = $this->situationManager->getChargeByMatriculeAndYear($rdvMatricule, $year);
+            $charge = $this->situationFamilialeRepository->getChargeByMatriculeAndYear($rdvMatricule, $year);
 
             $peseesMenages = $this->peseeMoyenneRepository->findOneByChargeAndYear(
                 $charge,
@@ -112,27 +116,50 @@ class PeseeController extends AbstractController
     }
 
     /**
-     * @Route("/parannee/{year}",name="duobac_annee")
-     *
+     * @Route("/{year}", name="duobac_annee", methods={"GET"})
      */
     public function annee(int $year): Response
     {
         $user = $this->getUser();
         $rdvMatricule = $user->getRdvMatricule();
 
+        $pesees = $this->peseeRepository->getByMatriculeAndYear($rdvMatricule, $year);
+
+        $chart = $this->chartHelper->genereratePesee($pesees);
+
+        return $this->render(
+            '@AcMarcheDuobac/pesee/show.html.twig',
+            [
+                'year' => $year,
+                'pesees' => $pesees,
+                'chart' => $chart,
+            ]
+        );
+    }
+
+    /**
+     * Route("/parannee/{year}",name="duobac_annee")
+     */
+    public function anneeold(int $year): Response
+    {
+        $user = $this->getUser();
+        $rdvMatricule = $user->getRdvMatricule();
+
         try {
-            $pesees = $this->peseeManager->getByMatriculeAndYear($rdvMatricule, $year);
+            $pesees = $this->peseeRepository->getByMatriculeAndYear($rdvMatricule, $year);
         } catch (Exception $e) {
             $this->addFlash('danger', $e->getMessage());
 
             return $this->redirectToRoute('duobac_home');
         }
 
+        $this->chartHelper->genereratePesee($pesees);
+
         $total = $this->peseeManager->getTotal($pesees);
         $this->moyenneManager->setMoyennes($pesees);
         $peseesGrouped = $this->peseeManager->groupPeseesByMonth($pesees);
 
-        $charge = $this->situationManager->getChargeByMatriculeAndYear($rdvMatricule, $year);
+        $charge = $this->situationFamilialeRepository->getChargeByMatriculeAndYear($rdvMatricule, $year);
 
         $peseesGrouped = $this->peseeManager->setMissingMonths($peseesGrouped, $year, $charge);
 

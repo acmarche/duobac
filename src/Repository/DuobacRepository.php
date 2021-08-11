@@ -32,4 +32,53 @@ class DuobacRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param Duobac[] $duobacs
+     */
+    public function getPucesCitoyensByDuobacs(array $duobacs): array
+    {
+        $puces = [];
+        foreach ($duobacs as $duobac) {
+            if (strlen($duobac->getRdvMatricule()) === 11) {
+                $puces[] = $duobac->getPucNoPuce();
+            }
+        }
+
+        return $puces;
+    }
+
+    /**
+     * @return Duobac[]
+     */
+    public function getDuobacsCitoyens(): array
+    {
+        $data = $this->findAll();
+        $duobacs = [];
+        foreach ($data as $duobac) {
+            if (strlen($duobac->getRdvMatricule()) == 11) {
+                $duobacs[] = $duobac;
+            }
+        }
+
+        return $duobacs;
+    }
+
+    public function findOneByMatricule($matricule): ?Duobac
+    {
+        return $this->createQueryBuilder('duobac')
+            ->andWhere('duobac.rdv_matricule = :matricule')
+            ->setParameter('matricule', $matricule)
+            ->getQuery()->getOneOrNullResult();
+    }
+
+    public function findOneByMatriculeAndPuce($matricule, $puce): ?Duobac
+    {
+        return $this->createQueryBuilder('duobac')
+            ->andWhere('duobac.rdv_matricule = :matricule')
+            ->setParameter('matricule', $matricule)
+            ->andWhere('duobac.puc_no_puce = :puce')
+            ->setParameter('puce', $puce)
+            ->getQuery()->getOneOrNullResult();
+    }
 }
