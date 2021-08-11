@@ -1,5 +1,4 @@
 {% extends '@AcMarcheDuobac/base.html.twig' %}
-
 {% block title %}Me connecter{% endblock %}
 
 {% block stylesheets %}
@@ -7,38 +6,46 @@
 {% endblock %}
 
 {% block body %}
+
     <div class="text-center">
 
-        <form class="form-signin" method="post" action="{{ path('app_login') }}">
-            <img class="mb-4 img-fluid" title="Adl"
-                 src="{{ asset('bundles/acmarcheduobac/images/Marche_logo.png') }}"
-                 alt="logo" width="90">
-            <h1 class="h3 mb-3 font-weight-normal">Authentification</h1>
-            <p class="text-info">Rentrez votre numéro de matricule <br/>
-                ainsi que le numéro de puce du duobac</p>
+        <p class="text-info">Rentrez votre numéro de matricule <br/>
+            ainsi que le numéro de puce du duobac</p>
+
+        <main class="form-signin">
 
             {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endif %}
-            <label for="inputEmail"
-                   class="sr-only">Numéro de matricule</label>
-            <input type="text" name="rrn" value="{{ last_username }}" id="inputEmail" class="form-control mb-2"
-                   placeholder="Votre numéro de matricule" required autofocus>
-            <label for="inputPassword"
-                   class="sr-only">Numéro de puce</label>
-            <input autocomplete="off" name="puce" type="password" id="inputPassword" class="form-control"
-                   placeholder="Numéro de puce du duobac" required>
 
-            <input type="hidden" name="_csrf_token"
-                   value="{{ csrf_token('authenticate') }}"
-            >
-            <button class="btn btn-lg btn-primary btn-block"
-                    type="submit"><i class="fas fa-sign-in-alt"></i> Me connecter
+            <form method="post" action="{{ path('app_login') }}">
+                <img class="mb-4" src="{{ asset('bundles/acmarcheduobac/images/Marche_logo.png') }}" alt="Adl"
+                     width="90"
+                >
+                <h1 class="h3 mb-3 fw-normal">Authentifiez-vous</h1>
+
+                <div class="form-floating">
+                    <input type="text" value="{{ last_username }}" name="username" class="form-control"
+                           id="floatingInput" placeholder="Votre numéro de matricule">
+                    <label for="floatingInput">Votre numéro de matricule</label>
+                </div>
+                <div class="form-floating mt-3">
+                    <input type="password" name="password" class="form-control" id="floatingPassword"
+                           placeholder="Numéro de puce du duobac">
+                    <label for="floatingPassword">Numéro de puce du duobac</label>
+                </div>
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Me connecter</button>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            </form>
+
+            <button type="button" class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <i class="fas fa-info"></i> Où trouver ces informations ?
             </button>
-        </form>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            Où trouver ces informations ?
-        </button>
+
+        </main>
     </div>
 
     {% include '@AcMarcheDuobac/security/_facture.html.twig' %}

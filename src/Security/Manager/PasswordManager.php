@@ -9,14 +9,15 @@
 namespace AcMarche\Duobac\Security\Manager;
 
 use AcMarche\Duobac\Entity\User;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordManager
 {
-    private UserPasswordEncoderInterface $userPasswordEncoder;
+    private UserPasswordHasherInterface $userPasswordEncoder;
 
     public function __construct(
-        UserPasswordEncoderInterface $userPasswordEncoder
+        UserPasswordHasherInterface $userPasswordEncoder
     ) {
         $this->userPasswordEncoder = $userPasswordEncoder;
     }
@@ -29,7 +30,7 @@ class PasswordManager
 
     public function changePassword(User $user, string $plainPassword): void
     {
-        $passwordCrypted = $this->userPasswordEncoder->encodePassword($user, $plainPassword);
+        $passwordCrypted = $this->userPasswordEncoder->hashPassword($user, $plainPassword);
         $user->setPassword($passwordCrypted);
         $user->setPlainPassword($plainPassword);//pour envoie par mail
     }

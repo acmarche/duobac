@@ -21,4 +21,15 @@ class DuobacRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Duobac::class);
     }
+
+    public function loadUserByIdentifier(string $rrn, string $puce): ?Duobac
+    {
+        return $this->createQueryBuilder('duobac')
+            ->andWhere('duobac.rdv_matricule = :rrn')
+            ->setParameter('rrn', $rrn)
+            ->andWhere('duobac.puc_no_puce = :puce')
+            ->setParameter('puce', $puce)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
