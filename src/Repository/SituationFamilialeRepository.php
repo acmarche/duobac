@@ -29,14 +29,11 @@ class SituationFamilialeRepository extends ServiceEntityRepository
      */
     public function getListeCharges()
     {
-        $builder = $this->createQueryBuilder('situation_familiale');
-
-        $builder
+        return $this->createQueryBuilder('situation_familiale')
             ->select('situation_familiale.a_charge')
             ->groupBy('situation_familiale.a_charge')
-            ->orderBy('situation_familiale.a_charge', 'ASC');
-
-        return $builder->getQuery()->getResult();
+            ->orderBy('situation_familiale.a_charge', 'ASC')
+            ->getQuery()->getResult();
     }
 
     /**
@@ -45,14 +42,11 @@ class SituationFamilialeRepository extends ServiceEntityRepository
      */
     public function findByMatricule(string $rdvMatricule): array
     {
-        $builder = $this->createQueryBuilder('situation_familiale');
-
-        $builder
+        return $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.rdv_matricule = :matricule')
             ->setParameter('matricule', $rdvMatricule)
-            ->orderBy('situation_familiale.annee', 'ASC');
-
-        return $builder->getQuery()->getResult();
+            ->orderBy('situation_familiale.annee', 'ASC')
+            ->getQuery()->getResult();
     }
 
     public function getAllYears(User $user): array
@@ -69,14 +63,13 @@ class SituationFamilialeRepository extends ServiceEntityRepository
 
     public function getChargeByMatriculeAndYear($rdvMatricule, $year): int
     {
-        $builder = $this->createQueryBuilder('situation_familiale')
+        $situation = $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.annee = :annee')
             ->setParameter('annee', $year)
             ->andWhere('situation_familiale.rdv_matricule = :matricule')
             ->setParameter('matricule', $rdvMatricule)
-            ->orderBy('situation_familiale.a_charge', 'ASC');
-
-        $situation = $builder->getQuery()->getOneOrNullResult();
+            ->orderBy('situation_familiale.a_charge', 'ASC')
+            ->getQuery()->getOneOrNullResult();
 
         if ($situation) {
             return $situation->getCharge();

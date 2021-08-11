@@ -19,25 +19,29 @@ class PeseeRepository extends ServiceEntityRepository
 {
     use OrmCrudTrait;
 
-    public function __construct(ManagerRegistry $registry)
-    {
+    private SituationFamilialeRepository $situationFamilialeRepository;
+    private DuobacRepository $duobacRepository;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        SituationFamilialeRepository $situationFamilialeRepository,
+        DuobacRepository $duobacRepository
+    ) {
         parent::__construct($registry, Pesee::class);
+        $this->situationFamilialeRepository = $situationFamilialeRepository;
+        $this->duobacRepository = $duobacRepository;
     }
 
     /**
      * @return Pesee[] Returns an array of Releve objects
      */
-    public function findByYear(int $annee)
+    public function findByYear(int $annee): array
     {
-        $builder = $this->createQueryBuilder('pesee');
-
-        $builder
+        return $this->createQueryBuilder('pesee')
             ->andWhere('pesee.date_pesee LIKE :annee')
-            ->setParameter('annee', $annee."%");
-
-        $builder->orderBy('pesee.date_pesee', 'ASC');
-
-        return $builder->getQuery()->getResult();
+            ->setParameter('annee', $annee."%")
+            ->orderBy('pesee.date_pesee', 'ASC')
+            ->getQuery()->getResult();
     }
 
     /**
@@ -50,13 +54,9 @@ class PeseeRepository extends ServiceEntityRepository
         DateTimeInterface $dateFin = null
     ): array {
         $builder = $this->createQueryBuilder('pesee')
-            ->orderBy('pesee.date_pesee', 'ASC');
-
-        $builder
+            ->orderBy('pesee.date_pesee', 'ASC')
             ->andWhere('pesee.puc_no_puce = :puces')
-            ->setParameter('puces', $puce);
-
-        $builder
+            ->setParameter('puces', $puce)
             ->andWhere('pesee.date_pesee LIKE :annee')
             ->setParameter('annee', $year."%");
 
@@ -93,37 +93,30 @@ class PeseeRepository extends ServiceEntityRepository
      * @param string $yearMonth 2018-01
      * @return Pesee[]
      */
-    public function getPeseesByChargeByYearMonth(array $puces, int $charge, string $yearMonth)
+    public function getPeseesByChargeByYearMonth(array $puces, int $charge, string $yearMonth): array
     {
-        $builder = $this->createQueryBuilder('pesee');
-
-        $builder
+        return $this->createQueryBuilder('pesee')
             ->andWhere('pesee.date_pesee LIKE :annee')
             ->setParameter('annee', $yearMonth."%")
             ->andWhere('pesee.a_charge LIKE :charge')
             ->setParameter('charge', $charge)
             ->andWhere('pesee.puc_no_puce IN (:puces)')
-            ->setParameter('puces', $puces);
-
-        $builder->orderBy('pesee.date_pesee', 'ASC');
-
-        return $builder->getQuery()->getResult();
+            ->setParameter('puces', $puces)
+            ->orderBy('pesee.date_pesee', 'ASC')
+            ->getQuery()->getResult();
     }
 
-    public function getYears(iterable $puces)
+    public function getYears(iterable $puces): array
     {
         /**
          * SELECT YEAR(date_pesee) as year FROM `pesee` WHERE `puc_no_puce` LIKE '110028' GROUP BY year
          */
-        $builder = $this->createQueryBuilder('pesee');
-
-        $builder
+        return $this->createQueryBuilder('pesee')
             ->select("YEAR(pesee.date_pesee) as year")
             ->andWhere('pesee.puc_no_puce IN (:puces)')
             ->setParameter('puces', $puces)
-            ->addGroupBy("year");
-
-        return $builder->getQuery()->getResult();
+            ->addGroupBy("year")
+            ->getQuery()->getResult();
     }
 
     /**

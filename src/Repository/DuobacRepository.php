@@ -35,6 +35,7 @@ class DuobacRepository extends ServiceEntityRepository
 
     /**
      * @param Duobac[] $duobacs
+     * @return string[]
      */
     public function getPucesCitoyensByDuobacs(array $duobacs): array
     {

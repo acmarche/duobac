@@ -3,11 +3,10 @@
 namespace AcMarche\Duobac\Repository;
 
 use AcMarche\Duobac\Doctrine\OrmCrudTrait;
-use DateTimeInterface;
 use AcMarche\Duobac\Entity\PeseeMoyenne;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @method PeseeMoyenne|null find($id, $lockMode = null, $lockVersion = null)
@@ -31,46 +30,28 @@ class PeseeMoyenneRepository extends ServiceEntityRepository
      */
     public function findOneByChargeAndDate(int $charge, DateTimeInterface $dateTime)
     {
-        $builder = $this->createQueryBuilder('pesee_moyenne');
-
-        $builder
+        return $this->createQueryBuilder('pesee_moyenne')
             ->andWhere('pesee_moyenne.a_charge = :charge')
-            ->setParameter('charge', $charge);
-
-        $builder
+            ->setParameter('charge', $charge)
             ->andWhere('pesee_moyenne.date_pesee LIKE :date')
-            ->setParameter('date', $dateTime->format('Y-m')."%");
-
-        $builder->orderBy('pesee_moyenne.date_pesee', 'ASC');
-
-        try {
-            return $builder->getQuery()->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
-        }
-
-        return null;
+            ->setParameter('date', $dateTime->format('Y-m')."%")
+            ->orderBy('pesee_moyenne.date_pesee', 'ASC')
+            ->getQuery()->getOneOrNullResult();
     }
 
     /**
      * @param int $charge
      * @param int $year
      * @return PeseeMoyenne[]|null
-     *
      */
     public function findOneByChargeAndYear(int $charge, int $year)
     {
-        $builder = $this->createQueryBuilder('pesee_moyenne');
-
-        $builder
+        return $this->createQueryBuilder('pesee_moyenne')
             ->andWhere('pesee_moyenne.a_charge = :charge')
-            ->setParameter('charge', $charge);
-
-        $builder
+            ->setParameter('charge', $charge)
             ->andWhere('pesee_moyenne.date_pesee LIKE :year')
-            ->setParameter('year', $year."%");
-
-        $builder->orderBy('pesee_moyenne.date_pesee', 'ASC');
-
-        return $builder->getQuery()->getResult();
+            ->setParameter('year', $year."%")
+            ->orderBy('pesee_moyenne.date_pesee', 'ASC')
+            ->getQuery()->getResult();
     }
 }
