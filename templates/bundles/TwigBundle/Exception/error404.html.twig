@@ -5,14 +5,15 @@
 {% endblock %}
 
 {% block body -%}
-    <div class="page-header">
-        <h3>Page non trouvée</h3>
-    </div>
 
-    <div class="alert alert-danger">
+    <div class="card">
+        <h3 class="card-header">Page non trouvée</h3>
 
-        {{ exception.message|nl2br|format_file_from_text |trans }}
-
+        <div class="card-body">
+            <div class="alert alert-danger">
+                {{ exception.message|nl2br|format_file_from_text |trans }}
+            </div>
+        </div>
     </div>
 
 {% endblock %}

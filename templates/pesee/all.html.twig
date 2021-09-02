@@ -2,12 +2,18 @@
 
 {% block body %}
 
-    <h3>Pesées pour {{ (years|length) +1 }} années</h3>
+    <div class="card">
+        <h3 class="card-header">Pesées pour {{ (years|length) +1 }} années</h3>
 
-    <div id="line-chart"></div>
-    <div id="column-chart"></div>
+        <div class="card-body">
 
-    {#{ graph2|raw }#}
-    {{ graph1|raw }}
+            <div id="line-chart"></div>
+            <div id="column-chart"></div>
+
+            {# { graph2|raw } #}
+            {{ graph1|raw }}
+
+        </div>
+    </div>
 
 {% endblock %}

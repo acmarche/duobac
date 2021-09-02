@@ -5,14 +5,16 @@
 {% endblock %}
 
 {% block body -%}
-    <div class="page-header">
-        <h3>Oups une erreur est survenue</h3>
-    </div>
+    <div class="card">
+        <h3 class="card-header">Oups une erreur est survenue</h3>
 
-    <h4>Le serveur a retourné : "{{ status_code }} {{ status_text }}".</h4>
+        <div class="card-body">
+            <h4>Le serveur a retourné : "{{ status_code }} {{ status_text }}".</h4>
 
-    <div>
-        Merci de prévenir votre administrateur.
+            <div>
+                Merci de prévenir votre administrateur.
+            </div>
+        </div>
     </div>
 
 {% endblock %}

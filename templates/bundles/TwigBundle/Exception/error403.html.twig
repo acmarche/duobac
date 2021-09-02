@@ -5,11 +5,14 @@
 {% endblock %}
 
 {% block body -%}
-    <div class="page-header">
-        <h3>Accès non autorisé</h3>
-    </div>
 
-    <img src="{{ asset('images/denied.png') }}" alt="denied" class="pull-left" />
-    <p class="pull-left text-danger">Vous n'avez pas le droit d'accèder à cette page</p>
+    <div class="card">
+        <h3 class="card-header">Accès non autorisé</h3>
+
+        <div class="card-body">
+            <img src="{{ asset('images/denied.png') }}" alt="denied" class="pull-left"/>
+            <p class="pull-left text-danger">Vous n'avez pas le droit d'accèder à cette page</p>
+        </div>
+    </div>
 
 {% endblock %}
