@@ -56,6 +56,26 @@ class PeseeController extends AbstractController
     }
 
     /**
+     * @Route("/index",name="duobac_pesee_index")
+     */
+    public function index(): Response
+    {
+        $user = $this->getUser();
+        $years = [];
+
+        if ($user) {
+            $years = $this->situationFamilialeRepository->getAllYears($user);
+        }
+
+        return $this->render(
+            '@AcMarcheDuobac/pesee/index.html.twig',
+            [
+                'years' => $years,
+            ]
+        );
+    }
+
+    /**
      * @Route("/all/year",name="duobac_pesee_all")
      */
     public function all(): Response

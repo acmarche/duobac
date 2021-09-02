@@ -16,6 +16,9 @@ class ChartHelper
     }
 
     /**
+     * https://www.chartjs.org/docs/latest/general/data-structures.html
+     * https://duobac.marche.be/pesee/parannee/2019
+     * http://duobac.local/pesee/2020
      * @param array|\AcMarche\Duobac\Entity\Pesee[] $pesees
      * @return \Symfony\UX\Chartjs\Model\Chart
      */

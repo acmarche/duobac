@@ -7,6 +7,7 @@ use AcMarche\Duobac\Entity\SituationFamiliale;
 use AcMarche\Duobac\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method SituationFamiliale|null find($id, $lockMode = null, $lockVersion = null)
@@ -49,7 +50,7 @@ class SituationFamilialeRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
-    public function getAllYears(User $user): array
+    public function getAllYears(UserInterface $user): array
     {
         $matricule = $user->getRdvMatricule();
         $years = [];
