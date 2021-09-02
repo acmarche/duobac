@@ -11,6 +11,7 @@ namespace AcMarche\Duobac\Service;
 use DateTimeInterface;
 use Exception;
 use DateTimeImmutable;
+
 class DateUtils
 {
     /**
@@ -28,7 +29,8 @@ class DateUtils
         return $dateTime;
     }
 
-    public static function getAllMonths() {
+    public static function getAllMonths()
+    {
         return [
             0 => 'Janvier',
             'Février',
@@ -44,6 +46,7 @@ class DateUtils
             'Décembre',
         ];
     }
+
     public static function getTitleMonth($numMonth)
     {
         $months = self::getAllMonths();
@@ -62,9 +65,10 @@ class DateUtils
 
         return $mois;
     }
+
     public static function getListeNumeroMoisWithOnedigit(): array
     {
-        return $mois = range(1, 12);
+        return range(1, 12);
     }
 
     public static function getNumeroMois(DateTimeInterface $dateTime): string

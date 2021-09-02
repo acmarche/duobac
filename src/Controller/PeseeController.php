@@ -22,8 +22,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- *
- * @package AcMarche\Duobac\Controller
  * @Route("/pesee")
  * @IsGranted("ROLE_DUOBAC")
  */

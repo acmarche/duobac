@@ -4,7 +4,6 @@ namespace AcMarche\Duobac\Repository;
 
 use AcMarche\Duobac\Doctrine\OrmCrudTrait;
 use AcMarche\Duobac\Entity\SituationFamiliale;
-use AcMarche\Duobac\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -77,5 +76,21 @@ class SituationFamilialeRepository extends ServiceEntityRepository
         }
 
         return 0;
+    }
+
+    /**
+     * @param string $rdvMatricule
+     * @param int $year
+     * @return array|SituationFamiliale[]
+     */
+    public function findByMatriculeAndYear(string $rdvMatricule, int $year): array
+    {
+        return $this->createQueryBuilder('situation_familiale')
+            ->andWhere('situation_familiale.annee = :annee')
+            ->setParameter('annee', $year)
+            ->andWhere('situation_familiale.rdv_matricule = :matricule')
+            ->setParameter('matricule', $rdvMatricule)
+            ->orderBy('situation_familiale.a_charge', 'ASC')
+            ->getQuery()->getResult();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AcMarche\Duobac\Chart;
 
+use AcMarche\Duobac\Service\ArrayUtils;
 use AcMarche\Duobac\Service\DateUtils;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -20,11 +21,17 @@ class ChartHelper
      * https://duobac.marche.be/pesee/parannee/2019
      * http://duobac.local/pesee/2020
      * @param array|\AcMarche\Duobac\Entity\Pesee[] $pesees
-     * @return \Symfony\UX\Chartjs\Model\Chart
+     * @return Chart
      */
     public function genereratePesee(array $pesees): Chart
     {
-        dump($pesees);
+        $data = ArrayUtils::initArraMonths();
+        foreach ($pesees as $pesee){
+            dump($pesee->getDatePesee()->format('m-Y'), $pesee->getPoids());
+            $data[$pesee->getDatePesee()->format('n')] += $pesee->getPoids();
+        }
+        $data = ArrayUtils::resetKeys($data);
+
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $labels = DateUtils::getAllMonths();
         $chart->setData([
@@ -34,7 +41,7 @@ class ChartHelper
                     'label' => 'My First dataset',
                     'backgroundColor' => 'rgb(255, 99, 132)',
                     'borderColor' => 'rgb(255, 99, 132)',
-                    'data' => [0, 10, 5, 2, 20, 30, 45, 0, 0, 0, 0, 0],
+                    'data' => $data,
                 ],
             ],
         ]);
