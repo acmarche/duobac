@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="h-100">
 <head>
     <meta charset="utf-8">
     {% block favicon %}
@@ -13,25 +13,12 @@
     {{ encore_entry_link_tags('app') }}
     {{ encore_entry_script_tags('app') }}
 
-    <link href="{{ asset('bundles/acmarcheduobac/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('bundles/acmarcheduobac/css/print.css') }}" rel="stylesheet" media="print">
-
 </head>
-<body>
+<body class="d-flex flex-column h-100">
 {% set action = app.request.attributes.get("_route") %}
-<div class="container">
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-            <i class="fa fa-trash-alt"></i>
-            <span class="fs-4">Duobac</span>
-        </a>
-        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            {% include '@AcMarcheDuobac/_menu.html.twig' %}
-        {% endif %}
-    </header>
-</div>
-
-<main role="main" {% block main_class %}class="container pt-3"{% endblock %}>
+{% include '@AcMarcheDuobac/_header.html.twig' %}
+<main role="main" class="container pt-3">
 
     {% include '@AcMarcheDuobac/_flash_messages.html.twig' %}
 
@@ -45,12 +32,12 @@
 </main>
 
 {% block footer %}
-    <footer class="mb-5 d-print-none">
-
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted"> </span>
+        </div>
     </footer>
 {% endblock %}
 {% block scripts %}{% endblock %}
-{% block javascripts %}{% endblock %}
-
 </body>
 </html>

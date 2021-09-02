@@ -1,7 +1,18 @@
-<ul class="nav nav-pills">
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
     <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Home</a></li>
     <li class="nav-item"><a href="{{ path('duobac_list') }}" class="nav-link">Mes duobacs</a></li>
-    <li class="nav-item"><a href="{{ path('duobac_contact') }}" class="nav-link">Pesées</a></li>
+    <li class="nav-item"><a href="{{ path('duobac_pesee_index') }}" class="nav-link">Pesées</a></li>
     <li class="nav-item"><a href="{{ path('duobac_contact') }}" class="nav-link">Contact</a></li>
-    <li class="nav-item"><a href="{{ path('app_logout') }}" class="nav-link">{{ app.user }}</a></li>
+</ul>
+<ul class="navbar-nav mb-2 mb-lg-0">
+    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+        <li class="nav-item">
+            <a href="{{ path('app_login') }}" class="nav-link"><i class="fas fa-sign-in-alt"></i>
+                Se connecter</a>
+        </li>
+    {% else %}
+        <li class="nav-item"><a href="{{ path('app_logout') }}" class="nav-link"><i class="fas fa-sign-out-alt"></i>
+                Déconnexion</a>
+        </li>
+    {% endif %}
 </ul>
