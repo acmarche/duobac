@@ -53,16 +53,18 @@ class ChartHelper
         $chart->setOptions([
             'title' => ['text' => 'Relevés xx', 'display' => false],
             'scales' => [
-                'vAxis' => [
-                    'title' => ['text' => 'Poids en Kg', 'display' => true],
-                ],
-                'yAxis' => [
-                    'title' => ['text' => 'Poids en Kg', 'display' => true],
-                ],
                 'yAxes' => [
-                    ['ticks' => ['min' => 0]],
+                    [
+                        'scaleLabel' => [
+                            'display' => true,
+                            'fontSize' => 16,
+                            'labelString' => "Poids en Kg",
+                        ],
+                        'ticks' => [
+                            'min' => 0,
+                        ],
+                    ],
                 ],
-
             ],
         ]);
 
