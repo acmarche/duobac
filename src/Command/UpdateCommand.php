@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class UpdateCommand extends Command
 {
     protected static $defaultName = 'duobac:update';
+
     private ImportManager $importManager;
     private ParameterBagInterface $parameterBag;
     private array $types = ['duobac', 'moyenne'];

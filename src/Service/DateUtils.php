@@ -47,13 +47,6 @@ class DateUtils
         ];
     }
 
-    public static function getTitleMonth($numMonth)
-    {
-        $months = self::getAllMonths();
-
-        return isset($months[$numMonth]) ? $months[$numMonth] : $numMonth;
-    }
-
     public static function getListeNumeroMoisWith2digits(): array
     {
         $mois = range(1, 12);
@@ -71,8 +64,4 @@ class DateUtils
         return range(1, 12);
     }
 
-    public static function getNumeroMois(DateTimeInterface $dateTime): string
-    {
-        return $dateTime->format('m');
-    }
 }

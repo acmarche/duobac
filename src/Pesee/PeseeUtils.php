@@ -42,7 +42,7 @@ class PeseeUtils
             if (!isset($pesees[$numMois])) {
                 $pesees[$numMois]['poids'] = 0;
 
-                $date = DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
+                $date = \DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
                 $menage = $data['menage'] ?? $this->peseeMoyenneRepository->findOneByChargeAndDate($charge, $date);
                 $pesees[$numMois]['menage'] = $menage ? $menage->getPoids() : 0;
             }
