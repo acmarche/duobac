@@ -1,18 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jfsenechal
- * Date: 15/11/18
- * Time: 13:39
- */
 
-namespace AcMarche\Duobac\Manager;
+namespace AcMarche\Duobac\Pesee;
 
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\PeseeMoyenne;
 use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
+use AcMarche\Duobac\Service\ArrayUtils;
 use AcMarche\Duobac\Service\DateUtils;
-use DateTime;
 
 class PeseeUtils
 {
@@ -26,9 +20,8 @@ class PeseeUtils
 
     /**
      * @param iterable|PeseeMoyenne[] $pesees
-     * @return int
      */
-    public function getTotal(iterable $pesees)
+    public function getTotal(iterable $pesees): float
     {
         $total = 0;
         foreach ($pesees as $pesee) {
@@ -77,4 +70,18 @@ class PeseeUtils
 
         return $all;
     }
+
+    /**
+     * @param array|Pesee[]|PeseeMoyenne[] $pesees
+     */
+    public function prepare(array $pesees): array
+    {
+        $data = ArrayUtils::initArraMonths();
+        foreach ($pesees as $pesee) {
+            $data[$pesee->getDatePesee()->format('n')] += $pesee->getPoids();
+        }
+
+        return ArrayUtils::resetKeys($data);
+    }
+
 }

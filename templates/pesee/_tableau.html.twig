@@ -1,25 +1,26 @@
+<h4 class="text-success mt-3">Tableaux des pesées</h4>
 <table class="table table-bordered">
     <thead>
     <tr>
         <th scope="col">Numéro de puce</th>
         <th scope="col">Date de pesée</th>
         <th scope="col">Poids (kg)</th>
-        <th scope="col">Personne à charge</th>
+        <th scope="col">Total ménages</th>
     </tr>
     </thead>
     <tbody>
     {% for pesee in pesees %}
-    <tr>
-        <td>{{ pesee.pucNoPuce }}</td>
-        <td>{{ pesee.datePesee | date('d-m-Y') }}</td>
-        <td>{{ pesee.poids|number_format(2,',') }}</td>
-        <td>{{ pesee.aCharge }}</td>
-    </tr>
+        <tr>
+            <td>{{ pesee.pucNoPuce }}</td>
+            <td>{{ pesee.datePesee | date('d-m-Y') }}</td>
+            <td>{{ pesee.poids|number_format(2,',') }}</td>
+            <td></td>
+        </tr>
     {% endfor %}
     <tr>
         <td colspan="2"><strong>Soit un total de</strong></td>
-        <td><strong>{{ total|number_format(2,',') }} kg </strong></td>
-        <td></td>
+        <td><strong>{{ totalUser|number_format(2,',') }} kg </strong></td>
+        <td><strong>{{ totalMenage|number_format(2,',') }} kg </strong></td>
     </tr>
     </tbody>
 </table>

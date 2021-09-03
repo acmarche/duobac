@@ -23,12 +23,7 @@ class PeseeMoyenneRepository extends ServiceEntityRepository
         parent::__construct($registry, PeseeMoyenne::class);
     }
 
-    /**
-     * @param int $charge
-     * @param DateTimeInterface $dateTime
-     * @return PeseeMoyenne|null
-     */
-    public function findOneByChargeAndDate(int $charge, DateTimeInterface $dateTime)
+    public function findOneByChargeAndDate(int $charge, DateTimeInterface $dateTime): ?PeseeMoyenne
     {
         return $this->createQueryBuilder('pesee_moyenne')
             ->andWhere('pesee_moyenne.a_charge = :charge')
@@ -44,7 +39,7 @@ class PeseeMoyenneRepository extends ServiceEntityRepository
      * @param int $year
      * @return PeseeMoyenne[]|null
      */
-    public function findOneByChargeAndYear(int $charge, int $year)
+    public function findByChargeAndYear(int $charge, int $year)
     {
         return $this->createQueryBuilder('pesee_moyenne')
             ->andWhere('pesee_moyenne.a_charge = :charge')

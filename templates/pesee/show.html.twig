@@ -3,11 +3,13 @@
 {% block body %}
 
     <div class="card">
-        <h3 class="card-header">Pesées pour l'année {{ year }}</h3>
+        <div class="card-header"><h3>Pesées pour l'année {{ year }}</h3>
+            <span class="text-muted">{{ charge }} personne(s) à charge cette année</span>
+        </div>
         <div class="card-body">
             {{ render_chart(chart) }}
 
-        {# {% include '@AcMarcheDuobac/pesee/_tableau.html.twig' %} #}
+            {% include '@AcMarcheDuobac/pesee/_tableau.html.twig' %}
         </div>
     </div>
 

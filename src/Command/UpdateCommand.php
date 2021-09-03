@@ -2,8 +2,8 @@
 
 namespace AcMarche\Duobac\Command;
 
-use AcMarche\Duobac\Manager\ImportManager;
-use AcMarche\Duobac\Manager\MoyenneManager;
+use AcMarche\Duobac\Import\ImportManager;
+use AcMarche\Duobac\Import\MoyenneManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

@@ -6,7 +6,7 @@
  * Time: 10:15
  */
 
-namespace AcMarche\Duobac\Manager;
+namespace AcMarche\Duobac\Import;
 
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\PeseeMoyenne;

@@ -2,7 +2,8 @@
 
 namespace AcMarche\Duobac\Chart;
 
-use AcMarche\Duobac\Service\ArrayUtils;
+use AcMarche\Duobac\Entity\Pesee;
+use AcMarche\Duobac\Entity\PeseeMoyenne;
 use AcMarche\Duobac\Service\DateUtils;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -20,37 +21,48 @@ class ChartHelper
      * https://www.chartjs.org/docs/latest/general/data-structures.html
      * https://duobac.marche.be/pesee/parannee/2019
      * http://duobac.local/pesee/2020
-     * @param array|\AcMarche\Duobac\Entity\Pesee[] $pesees
+     * @param array|Pesee[] $pesees
+     * @param array|PeseeMoyenne[] $moyennes
      * @return Chart
      */
-    public function genereratePesee(array $pesees): Chart
+    public function genereratePesee(array $pesees, array $moyennes): Chart
     {
-        $data = ArrayUtils::initArraMonths();
-        foreach ($pesees as $pesee){
-            dump($pesee->getDatePesee()->format('m-Y'), $pesee->getPoids());
-            $data[$pesee->getDatePesee()->format('n')] += $pesee->getPoids();
-        }
-        $data = ArrayUtils::resetKeys($data);
-
-        $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
+        $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
         $labels = DateUtils::getAllMonths();
+
         $chart->setData([
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'My First dataset',
+                    'label' => 'Mes pesées',
                     'backgroundColor' => 'rgb(255, 99, 132)',
                     'borderColor' => 'rgb(255, 99, 132)',
-                    'data' => $data,
+                    'minBarLength' => 1,
+                    'data' => $pesees,
+                ],
+                [
+                    'label' => 'Pesées moyennes ménages',
+                    'backgroundColor' => 'rgb(102, 204, 0)',
+                    'borderColor' => 'rgb(255, 99, 132)',
+                    'minBarLength' => 1,
+                    'data' => $moyennes,
                 ],
             ],
         ]);
 
         $chart->setOptions([
+            'title' => ['text' => 'Relevés xx', 'display' => false],
             'scales' => [
-                'yAxes' => [
-                    ['ticks' => ['min' => 0, 'max' => 100]],
+                'vAxis' => [
+                    'title' => ['text' => 'Poids en Kg', 'display' => true],
                 ],
+                'yAxis' => [
+                    'title' => ['text' => 'Poids en Kg', 'display' => true],
+                ],
+                'yAxes' => [
+                    ['ticks' => ['min' => 0]],
+                ],
+
             ],
         ]);
 

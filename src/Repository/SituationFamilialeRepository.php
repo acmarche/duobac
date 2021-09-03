@@ -6,7 +6,6 @@ use AcMarche\Duobac\Doctrine\OrmCrudTrait;
 use AcMarche\Duobac\Entity\SituationFamiliale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method SituationFamiliale|null find($id, $lockMode = null, $lockVersion = null)
@@ -49,16 +48,13 @@ class SituationFamilialeRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
-    public function getAllYears(UserInterface $user): array
+    public function getAllYearsByMatricule(string $matricule): array
     {
-        $matricule = $user->getRdvMatricule();
-        $years = [];
-        $situations = $this->findByMatricule($matricule);
-        foreach ($situations as $situation) {
-            $years[] = $situation->getAnnee();
-        }
-
-        return array_unique($years);
+        return array_unique(
+            array_map(function ($situation) {
+                return $situation->getAnnee();
+            }, $this->findByMatricule($matricule))
+        );
     }
 
     public function getChargeByMatriculeAndYear($rdvMatricule, $year): int
@@ -81,16 +77,26 @@ class SituationFamilialeRepository extends ServiceEntityRepository
     /**
      * @param string $rdvMatricule
      * @param int $year
-     * @return array|SituationFamiliale[]
+     * @return array|SituationFamiliale[]|SituationFamiliale
      */
-    public function findByMatriculeAndYear(string $rdvMatricule, int $year): array
+    public function findByMatriculeAndYear(string $rdvMatricule, int $year, bool $one = false)
     {
-        return $this->createQueryBuilder('situation_familiale')
+        $situations = $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.annee = :annee')
             ->setParameter('annee', $year)
             ->andWhere('situation_familiale.rdv_matricule = :matricule')
             ->setParameter('matricule', $rdvMatricule)
             ->orderBy('situation_familiale.a_charge', 'ASC')
             ->getQuery()->getResult();
+
+        if ($one === false) {
+            return $situations;
+        }
+
+        if (count($situations) > 0) {
+            return $situations[0];
+        }
+
+        return null;
     }
 }
