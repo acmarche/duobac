@@ -49,4 +49,19 @@ class PeseeMoyenneRepository extends ServiceEntityRepository
             ->orderBy('pesee_moyenne.date_pesee', 'ASC')
             ->getQuery()->getResult();
     }
+
+    public function deleteByYear(int $year)
+    {
+        $moyennes = $this->createQueryBuilder('pesee_moyenne')
+            ->andWhere('pesee_moyenne.date_pesee LIKE :year')
+            ->setParameter('year', $year."%")
+            ->orderBy('pesee_moyenne.date_pesee', 'ASC')
+            ->getQuery()->getResult();
+
+        foreach ($moyennes as $moyenne) {
+            $this->remove($moyenne);
+        }
+
+        $this->flush();
+    }
 }

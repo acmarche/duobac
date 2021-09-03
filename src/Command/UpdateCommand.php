@@ -4,6 +4,7 @@ namespace AcMarche\Duobac\Command;
 
 use AcMarche\Duobac\Import\ImportManager;
 use AcMarche\Duobac\Import\MoyenneManager;
+use AcMarche\Duobac\Repository\PeseeRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,16 +20,19 @@ class UpdateCommand extends Command
     private ParameterBagInterface $parameterBag;
     private array $types = ['duobac', 'moyenne'];
     private MoyenneManager $moyenneManager;
+    private PeseeRepository $peseeRepository;
 
     public function __construct(
         ImportManager $importManager,
         MoyenneManager $moyenneManager,
+        PeseeRepository $peseeRepository,
         ParameterBagInterface $parameterBag
     ) {
         parent::__construct();
         $this->importManager = $importManager;
         $this->parameterBag = $parameterBag;
         $this->moyenneManager = $moyenneManager;
+        $this->peseeRepository = $peseeRepository;
     }
 
     protected function configure(): void
@@ -48,13 +52,18 @@ class UpdateCommand extends Command
         if (!in_array($type, $this->types)) {
             $io->error('Erreur pour le type, les choix possibles sont: '.implode(',', $this->types));
 
-            return 1;
+            return Command::FAILURE;
+        }
+
+        if (!$year) {
+            return Command::FAILURE;
         }
 
         $file = $this->parameterBag->get('kernel.project_dir').'/data/Pesees2021.csv';
 
         if ($type === 'duobac') {
             $i = 0;
+            $this->peseeRepository->removeByYear($year);
             foreach ($this->importManager->getLines($file) as $data) {
                 $io->writeln($data[1].' '.$i);
                 $this->importManager->treatment($data, $year);
@@ -64,10 +73,11 @@ class UpdateCommand extends Command
 
         if ($type === 'moyenne') {
             $output->writeln($year);
+            $this->moyenneManager->deleteByYear($year);
             $this->moyenneManager->setIo($io);
             $this->moyenneManager->execute($year);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

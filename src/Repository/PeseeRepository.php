@@ -35,18 +35,6 @@ class PeseeRepository extends ServiceEntityRepository
     /**
      * @return Pesee[] Returns an array of Releve objects
      */
-    public function findByYear(int $annee): array
-    {
-        return $this->createQueryBuilder('pesee')
-            ->andWhere('pesee.date_pesee LIKE :annee')
-            ->setParameter('annee', $annee."%")
-            ->orderBy('pesee.date_pesee', 'ASC')
-            ->getQuery()->getResult();
-    }
-
-    /**
-     * @return Pesee[] Returns an array of Releve objects
-     */
     public function findByPuceAndYear(
         string $puce,
         int $year,
@@ -106,19 +94,6 @@ class PeseeRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
-    public function getYears(iterable $puces): array
-    {
-        /**
-         * SELECT YEAR(date_pesee) as year FROM `pesee` WHERE `puc_no_puce` LIKE '110028' GROUP BY year
-         */
-        return $this->createQueryBuilder('pesee')
-            ->select("YEAR(pesee.date_pesee) as year")
-            ->andWhere('pesee.puc_no_puce IN (:puces)')
-            ->setParameter('puces', $puces)
-            ->addGroupBy("year")
-            ->getQuery()->getResult();
-    }
-
     /**
      * @param string $rdvMatricule
      * @param int $year
@@ -149,5 +124,21 @@ class PeseeRepository extends ServiceEntityRepository
         }
 
         return array_merge(...$pesees);
+    }
+
+    public function removeByYear(int $year)
+    {
+        $pesees = $this->createQueryBuilder('pesee')
+            ->orderBy('pesee.date_pesee', 'ASC')
+            ->andWhere('pesee.date_pesee LIKE :annee')
+            ->setParameter('annee', $year."%")
+            ->getQuery()
+            ->getResult();
+
+        foreach ($pesees as $pesee) {
+            $this->remove($pesee);
+        }
+
+        $this->flush();
     }
 }

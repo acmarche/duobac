@@ -8,23 +8,19 @@
 
 namespace AcMarche\Duobac\Import;
 
-use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\PeseeMoyenne;
 use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
 use AcMarche\Duobac\Repository\PeseeRepository;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use AcMarche\Duobac\Service\DateUtils;
-use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
-use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MoyenneManager
 {
-    private PeseeMoyenneRepository $moyenneRepository;
+    private PeseeMoyenneRepository $peseeMoyenneRepository;
     private PeseeRepository $peseeRepository;
     private SituationFamilialeRepository $situationFamilialeRepository;
     private DateUtils $dateUtils;
@@ -32,13 +28,13 @@ class MoyenneManager
     private DuobacRepository $duobacRepository;
 
     public function __construct(
-        PeseeMoyenneRepository $moyenneRepository,
+        PeseeMoyenneRepository $peseeMoyenneRepository,
         PeseeRepository $peseeRepository,
         DuobacRepository $duobacRepository,
         SituationFamilialeRepository $situationFamilialeRepository,
         DateUtils $dateUtils
     ) {
-        $this->moyenneRepository = $moyenneRepository;
+        $this->peseeMoyenneRepository = $peseeMoyenneRepository;
         $this->peseeRepository = $peseeRepository;
         $this->situationFamilialeRepository = $situationFamilialeRepository;
         $this->dateUtils = $dateUtils;
@@ -54,12 +50,12 @@ class MoyenneManager
 
     public function getInstance(string $charge, DateTimeInterface $dateTime): PeseeMoyenne
     {
-        if (($moyenne = $this->moyenneRepository->findOneBy(['date_pesee' => $dateTime, 'a_charge' => $charge]
+        if (($moyenne = $this->peseeMoyenneRepository->findOneBy(['date_pesee' => $dateTime, 'a_charge' => $charge]
             )) === null) {
             $moyenne = new PeseeMoyenne();
             $moyenne->setDatePesee($dateTime);
             $moyenne->setACharge($charge);
-            $this->moyenneRepository->persist($moyenne);
+            $this->peseeMoyenneRepository->persist($moyenne);
         }
 
         return $moyenne;
@@ -98,39 +94,15 @@ class MoyenneManager
                 $peseeMoyenne->setPoids($moyenne);
             }
         }
-        $this->moyenneRepository->flush();
-    }
-
-    /**
-     * @param int $charge
-     * @param DateTime|DateTimeImmutable $dateTime
-     *
-     */
-    public function findOneByChargeAndDate(int $charge, DateTimeInterface $dateTime): ?PeseeMoyenne
-    {
-        try {
-            return $this->moyenneRepository->findOneByChargeAndDate($charge, $dateTime);
-        } catch (NonUniqueResultException $e) {
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Pesee[] $pesees
-     */
-    public function setMoyennes(iterable $pesees): void
-    {
-        foreach ($pesees as $pesee) {
-            $date = $pesee->getDatePesee();
-            $charge = $pesee->getACharge();
-            $moyenne = $this->findOneByChargeAndDate($charge, $date);
-            $pesee->setMoyenne($moyenne);
-        }
+        $this->peseeMoyenneRepository->flush();
     }
 
     public function setIo(SymfonyStyle $io): void
     {
         $this->io = $io;
+    }
+
+    public function deleteByYear(int $year) {
+        $this->peseeMoyenneRepository->deleteByYear($year);
     }
 }
