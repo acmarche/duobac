@@ -8,6 +8,31 @@
         <div class="card-body">
 
             {{ render_chart(chart) }}
+
+            <h4 class="text-success mt-3">Tableaux des pesées</h4>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Année</th>
+                    <th scope="col">Poids (kg)</th>
+                    <th scope="col">Poids ménages</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for year, poids in dataUser %}
+                    <tr>
+                        <td>{{ year }}</td>
+                        <td>{{ poids|number_format(2,',') }}</td>
+                        <td>{{ totauxByYearMenage[year] }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td><strong>Soit un total de</strong></td>
+                    <td>{{ totalUser | number_format(2,'') }}</td>
+                    <td>{{ totalMenage | number_format(2,'') }}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 

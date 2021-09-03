@@ -65,12 +65,16 @@ class DuobacRepository extends ServiceEntityRepository
         return $duobacs;
     }
 
-    public function findOneByMatricule($matricule): ?Duobac
+    /**
+     * @param $matricule
+     * @return array|Duobac[]
+     */
+    public function findByMatricule($matricule): array
     {
         return $this->createQueryBuilder('duobac')
             ->andWhere('duobac.rdv_matricule = :matricule')
             ->setParameter('matricule', $matricule)
-            ->getQuery()->getOneOrNullResult();
+            ->getQuery()->getResult();
     }
 
     public function findOneByMatriculeAndPuce($matricule, $puce): ?Duobac

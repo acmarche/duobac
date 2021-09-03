@@ -59,16 +59,16 @@ class SituationFamilialeRepository extends ServiceEntityRepository
 
     public function getChargeByMatriculeAndYear($rdvMatricule, $year): int
     {
-        $situation = $this->createQueryBuilder('situation_familiale')
+        $situations = $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.annee = :annee')
             ->setParameter('annee', $year)
             ->andWhere('situation_familiale.rdv_matricule = :matricule')
             ->setParameter('matricule', $rdvMatricule)
             ->orderBy('situation_familiale.a_charge', 'ASC')
-            ->getQuery()->getOneOrNullResult();
+            ->getQuery()->getResult();
 
-        if ($situation) {
-            return $situation->getCharge();
+        if (count($situations) > 0) {
+            return $situations[0]->getACharge();
         }
 
         return 0;

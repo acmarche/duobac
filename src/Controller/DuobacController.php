@@ -35,7 +35,7 @@ class DuobacController extends AbstractController
     public function index(): Response
     {
         $matricule = $this->getUser()->getRdvMatricule();
-        $duobacs = $this->duobacRepository->findOneByMatricule($matricule);
+        $duobacs = $this->duobacRepository->findByMatricule($matricule);
         $situations = $this->situationFamilialeRepository->findByMatricule($matricule);
 
         $coordonnees = $duobacs[0] ?? null;
