@@ -36,9 +36,7 @@ class PassportDuobac implements UserPassportInterface
                     'Cannot get the Security user, no username or UserBadge configured for this passport.'
                 );
             }
-
-            $duobac = $this->getBadge(DuobacBadge::class)->getDuobac();
-            $this->user =  $this->getBadge(DuobacBadge::class)->getUser();
+            $this->user = $this->getBadge(DuobacBadge::class)->getUser();
         }
 
         return $this->user;

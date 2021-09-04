@@ -3,7 +3,6 @@
 namespace AcMarche\Duobac\Security;
 
 use AcMarche\Duobac\Entity\Duobac;
-use AcMarche\Duobac\Entity\User;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -29,18 +28,21 @@ class DuobacBadge implements BadgeInterface
     private $user;
     private string $puce;
     private ?Duobac $duobac;
+    private UserFactory $userFactory;
 
     public function __construct(
         string $userIdentifier,
         string $puce,
         callable $duobacLoader = null,
-        callable $userLoader = null
+        callable $userLoader = null,
+        UserFactory $userFactory
     ) {
         $this->userIdentifier = $userIdentifier;
         $this->userLoader = $userLoader;
         $this->puce = $puce;
         $this->duobacLoader = $duobacLoader;
         $this->duobac = null;
+        $this->userFactory = $userFactory;
     }
 
     public function getUserIdentifier(): string
@@ -105,35 +107,11 @@ class DuobacBadge implements BadgeInterface
 
             $this->user = ($this->userLoader)($this->userIdentifier);
             if ($this->user === null) {
-                $this->user = $this->newFromDuobac($this->duobac);
+                $this->user = ($this->userFactory)($this->duobac);
             }
         }
 
         return $this->user;
-    }
-
-    /**
-     * todo sortir de badge
-     * todo dans onAuthenticationFailure ?
-     * @param \AcMarche\Duobac\Entity\Duobac $duobac
-     * @return \AcMarche\Duobac\Entity\User
-     */
-    private function newFromDuobac(Duobac $duobac): User
-    {
-        $user = new User();
-        $user->setRdvMatricule($duobac->getRdvMatricule());
-        $user->setNom($duobac->getRdvNom());
-        $user->setPrenom($duobac->getRdvPrenom1());
-        if (!in_array(SecurityData::getRoleUser(), $user->getRoles())) {
-            $user->setRoles([SecurityData::getRoleUser()]);
-        }
-        $this->passwordManager->generateNewPassword($user);
-        $this->passwordManager->changePassword($user, $user->getPlainPassword());
-        $user->addDuobac($duobac);
-        $this->userLoader->persist($user);
-        $this->userLoader->flush();
-
-        return $user;
     }
 
     public function getUserLoader(): ?callable

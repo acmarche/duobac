@@ -7,6 +7,7 @@ use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\UserRepository;
 use AcMarche\Duobac\Security\DuobacBadge;
 use AcMarche\Duobac\Security\PassportDuobac;
+use AcMarche\Duobac\Security\UserFactory;
 use AcMarche\Duobac\Service\StringUtils;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -41,17 +42,20 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
     private UserRepository $userRepository;
     private DuobacRepository $duobacRepository;
     private ParameterBagInterface $parameterBag;
+    private UserFactory $userFactory;
 
     public function __construct(
         UrlGeneratorInterface $urlGenerator,
         UserRepository $userRepository,
         DuobacRepository $duobacRepository,
+        UserFactory $userFactory,
         ParameterBagInterface $parameterBag
     ) {
         $this->urlGenerator = $urlGenerator;
         $this->userRepository = $userRepository;
         $this->duobacRepository = $duobacRepository;
         $this->parameterBag = $parameterBag;
+        $this->userFactory = $userFactory;
     }
 
     public function supports(Request $request): bool
@@ -82,7 +86,8 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
         },
             function ($email) {
                 return $this->userRepository->loadUserByIdentifier($email);
-            }
+            },
+            $this->userFactory
         );
 
         return new PassportDuobac(
