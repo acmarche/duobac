@@ -18,11 +18,7 @@ class UserFactory
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @param \AcMarche\Duobac\Entity\Duobac $duobac
-     * @return \AcMarche\Duobac\Entity\User
-     */
-    public function create(Duobac $duobac)
+    public function create(Duobac $duobac): User
     {
         $user = new User();
         $user->setRdvMatricule($duobac->getRdvMatricule());
@@ -32,7 +28,7 @@ class UserFactory
             $user->setRoles([SecurityData::getRoleUser()]);
         }
         $password = $this->generatePassword();
-        $this->userPasswordHasher->hashPassword($user, $password);
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, $password));
         $user->addDuobac($duobac);
         $this->userRepository->persist($user);
         $this->userRepository->flush();

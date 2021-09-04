@@ -107,7 +107,8 @@ class DuobacBadge implements BadgeInterface
 
             $this->user = ($this->userLoader)($this->userIdentifier);
             if ($this->user === null) {
-                $this->user = ($this->userFactory)($this->duobac);
+                $userFactory = $this->userFactory;
+                $this->user = $userFactory->create($this->getDuobac());
             }
         }
 
