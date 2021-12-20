@@ -89,7 +89,7 @@ class PeseeRepository extends ServiceEntityRepository
     {
         $pesees = [[]];
         foreach ($duobacs as $duobac) {
-            $pesees[] = $this->findByPuceAndDatesConstraint($duobac->getPucNoPuce(), $duobac->getPurDateFin(), $duobac->getPurDateDebut());
+            $pesees[] = $this->findByPuceAndDatesConstraint($duobac->getPucNoPuce(), $duobac->getPurDateDebut(), $duobac->getPurDateFin());
         }
         $pesees = array_merge(...$pesees);
         if ($year) {
