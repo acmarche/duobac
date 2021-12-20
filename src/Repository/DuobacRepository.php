@@ -22,7 +22,7 @@ class DuobacRepository extends ServiceEntityRepository
         parent::__construct($registry, Duobac::class);
     }
 
-    public function loadUserByIdentifier(string $rrn, string $puce): ?Duobac
+    public function findByRrnAndPuce(string $rrn, string $puce): ?Duobac
     {
         return $this->createQueryBuilder('duobac')
             ->andWhere('duobac.rdv_matricule = :rrn')

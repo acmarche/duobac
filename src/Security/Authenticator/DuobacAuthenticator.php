@@ -3,24 +3,24 @@
 
 namespace AcMarche\Duobac\Security\Authenticator;
 
+use AcMarche\Duobac\Entity\Duobac;
 use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\UserRepository;
-use AcMarche\Duobac\Security\DuobacBadge;
-use AcMarche\Duobac\Security\PassportDuobac;
 use AcMarche\Duobac\Security\UserFactory;
 use AcMarche\Duobac\Service\StringUtils;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
-use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
@@ -43,19 +43,22 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
     private DuobacRepository $duobacRepository;
     private ParameterBagInterface $parameterBag;
     private UserFactory $userFactory;
+    private LoggerInterface $logger;
 
     public function __construct(
         UrlGeneratorInterface $urlGenerator,
-        UserRepository $userRepository,
-        DuobacRepository $duobacRepository,
-        UserFactory $userFactory,
-        ParameterBagInterface $parameterBag
-    ) {
+        UserRepository        $userRepository,
+        DuobacRepository      $duobacRepository,
+        UserFactory           $userFactory,
+        ParameterBagInterface $parameterBag, LoggerInterface $logger
+    )
+    {
         $this->urlGenerator = $urlGenerator;
         $this->userRepository = $userRepository;
         $this->duobacRepository = $duobacRepository;
         $this->parameterBag = $parameterBag;
         $this->userFactory = $userFactory;
+        $this->logger = $logger;
     }
 
     public function supports(Request $request): bool
@@ -63,35 +66,36 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
         return $request->isMethod('POST') && $this->getLoginUrl($request) === $request->getPathInfo();
     }
 
-    public function authenticate(Request $request): PassportInterface
+    /**
+     * Dans passeport, new UserBadge($rrn) va chercher un user par son rrn
+     * Si aucun user existe auth echoue
+     * Donc je cree user avant si findDuobac ok
+     */
+    public function authenticate(Request $request): Passport
     {
-        $email = StringUtils::removeChars($request->request->get('username', ''));
-        $password = StringUtils::removeChars($request->request->get('password', ''));
+        $rrn = StringUtils::removeChars($request->request->get('username', ''));
+        $puce = StringUtils::removeChars($request->request->get('password', ''));
         $token = $request->request->get('_csrf_token', '');
 
-        $request->getSession()->set(Security::LAST_USERNAME, $email);
+        $duobac = $this->duobacRepository->findByRrnAndPuce($rrn, $puce);
+        if ($duobac instanceof Duobac) {
+            $user = $this->userRepository->loadUserByIdentifier($rrn);
+            if (!$user) {
+                $this->userFactory->create($duobac);
+            }
+        }
 
         $badges =
             [
                 new CsrfTokenBadge('authenticate', $token),
             ];
 
-        $credentials = new CustomCredentials(function ($credentials, UserInterface $user) {
+        $credentials = new CustomCredentials(function ($credentials, UserInterface $user): bool {
             return $user->getUserIdentifier() === $credentials;
-        }, $email);
+        }, $rrn);//ici je pourrais mettre [$rrn, $puce] et y acceder via credentials[0]
 
-        $duobacBage = new DuobacBadge(
-            $email, $password, function ($email, $password) {
-            return $this->duobacRepository->loadUserByIdentifier($email, $password);
-        },
-            function ($email) {
-                return $this->userRepository->loadUserByIdentifier($email);
-            },
-            $this->userFactory
-        );
-
-        return new PassportDuobac(
-            $duobacBage,
+        return new Passport(
+            new UserBadge($rrn),
             $credentials,
             $badges
         );

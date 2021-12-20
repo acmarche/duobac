@@ -9,7 +9,7 @@ security:
     duobac_user_provider:
       entity:
         class: AcMarche\Duobac\Entity\User
-        property: username
+        property: rdv_matricule
   firewalls:
     main:
       #anonymous: lazy
