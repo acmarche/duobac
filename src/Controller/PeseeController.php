@@ -86,7 +86,7 @@ class PeseeController extends AbstractController
         $totalUser = $totalMenage = 0;
 
         foreach ($years as $year) {
-            $peseesUser[$year] = $this->peseeRepository->getByMatriculeAndYear($rdvMatricule, $year);
+            $peseesUser[$year] = $this->peseeRepository->findByDuobacsAndYear($duobacs, $year);
             $charge = $this->situationFamilialeRepository->getChargeByMatriculeAndYear($rdvMatricule, $year);
             $peseesMenage[$year] = $this->peseeMoyenneRepository->findByChargeAndYear(
                 $charge,
@@ -126,8 +126,9 @@ class PeseeController extends AbstractController
     {
         $user = $this->getUser();
         $rdvMatricule = $user->getRdvMatricule();
-        $pesees = $this->peseeRepository->getByMatriculeAndYear($rdvMatricule, $year);
-        $data = $this->peseeUtils->prepareForOneYear($pesees);
+        $duobacs = $this->duobacRepository->findByMatricule($rdvMatricule);
+        $pesees = $this->peseeRepository->findByDuobacsAndYear($duobacs, $year);
+        $data = $this->peseeUtils->groupByMonthsForOneYear($pesees);
         $totalUser = $this->peseeUtils->getTotal($pesees);
 
         $situation = $this->situationFamilialeRepository->findByMatriculeAndYear($rdvMatricule, $year, true);
@@ -143,8 +144,7 @@ class PeseeController extends AbstractController
             $year
         );
         $totalMenage = $this->peseeUtils->getTotal($peseesMenages);
-
-        $dataMenage = $this->peseeUtils->prepareForOneYear($peseesMenages);
+        $dataMenage = $this->peseeUtils->groupByMonthsForOneYear($peseesMenages);
 
         $chart = $this->chartHelper->genereratePesee($data, $dataMenage);
 

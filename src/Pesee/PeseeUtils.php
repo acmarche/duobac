@@ -74,7 +74,7 @@ class PeseeUtils
     /**
      * @param array|Pesee[]|PeseeMoyenne[] $pesees
      */
-    public function prepareForOneYear(array $pesees): array
+    public function groupByMonthsForOneYear(array $pesees): array
     {
         $data = ArrayUtils::initArraMonths();
         foreach ($pesees as $pesee) {
@@ -84,7 +84,6 @@ class PeseeUtils
         return ArrayUtils::resetKeys($data);
     }
 
-
     /**
      * @param array|Pesee[]|PeseeMoyenne[] $data
      */
@@ -92,7 +91,7 @@ class PeseeUtils
     {
         $all = [];
         foreach ($data as $year => $pesees) {
-            $t = $this->prepareForOneYear($pesees);
+            $t = $this->groupByMonthsForOneYear($pesees);
             $all[$year] = array_sum($t);
 
         }

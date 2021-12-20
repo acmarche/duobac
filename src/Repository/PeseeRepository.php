@@ -3,6 +3,7 @@
 namespace AcMarche\Duobac\Repository;
 
 use AcMarche\Duobac\Doctrine\OrmCrudTrait;
+use AcMarche\Duobac\Entity\Duobac;
 use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\PeseeInterface;
 use DateTimeInterface;
@@ -23,10 +24,11 @@ class PeseeRepository extends ServiceEntityRepository
     private DuobacRepository $duobacRepository;
 
     public function __construct(
-        ManagerRegistry $registry,
+        ManagerRegistry              $registry,
         SituationFamilialeRepository $situationFamilialeRepository,
-        DuobacRepository $duobacRepository
-    ) {
+        DuobacRepository             $duobacRepository
+    )
+    {
         parent::__construct($registry, Pesee::class);
         $this->situationFamilialeRepository = $situationFamilialeRepository;
         $this->duobacRepository = $duobacRepository;
@@ -35,41 +37,25 @@ class PeseeRepository extends ServiceEntityRepository
     /**
      * @return Pesee[] Returns an array of Releve objects
      */
-    public function findByPuceAndYear(
-        string $puce,
-        int $year,
-        DateTimeInterface $dateDebut = null,
-        DateTimeInterface $dateFin = null
-    ): array {
+    public function findByPuceAndDatesConstraint(
+        string             $puce,
+        DateTimeInterface  $dateDebut,
+        ?DateTimeInterface $dateFin = null
+    ): array
+    {
         $builder = $this->createQueryBuilder('pesee')
             ->orderBy('pesee.date_pesee', 'ASC')
             ->andWhere('pesee.puc_no_puce = :puces')
-            ->setParameter('puces', $puce)
-            ->andWhere('pesee.date_pesee LIKE :annee')
-            ->setParameter('annee', $year."%");
+            ->setParameter('puces', $puce);
 
-        if ($dateDebut && $dateFin) {
+        if ($dateFin) {
             $builder->andWhere('pesee.date_pesee BETWEEN :debut AND :fin')
                 ->setParameter('debut', $dateDebut)
                 ->setParameter('fin', $dateFin);
-
-            return $builder->getQuery()->getResult();
-        }
-
-        if ($dateDebut !== null) {
+        } else {
             $builder
-                ->andWhere('pesee.date_pesee > :month')
-                ->setParameter('month', $dateDebut);
-
-            return $builder->getQuery()->getResult();
-        }
-
-        if ($dateFin !== null) {
-            $builder
-                ->andWhere('pesee.date_pesee < :month')
-                ->setParameter('month', $dateFin);
-
-            return $builder->getQuery()->getResult();
+                ->andWhere('pesee.date_pesee > :debut')
+                ->setParameter('debut', $dateDebut);
         }
 
         return $builder->getQuery()->getResult();
@@ -85,7 +71,7 @@ class PeseeRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('pesee')
             ->andWhere('pesee.date_pesee LIKE :annee')
-            ->setParameter('annee', $yearMonth."%")
+            ->setParameter('annee', $yearMonth . "%")
             ->andWhere('pesee.a_charge LIKE :charge')
             ->setParameter('charge', $charge)
             ->andWhere('pesee.puc_no_puce IN (:puces)')
@@ -95,35 +81,23 @@ class PeseeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $rdvMatricule
+     * @param array|Duobac[] $duobacs
      * @param int $year
      * @return PeseeInterface[]
      */
-    public function getByMatriculeAndYear(string $rdvMatricule, int $year): array
+    public function findByDuobacsAndYear(array $duobacs, int $year): array
     {
-        $situations = $this->situationFamilialeRepository->findByMatriculeAndYear($rdvMatricule, $year);
-
         $pesees = [[]];
-        foreach ($situations as $situation) {
-            $puce = $situation->getPucNoPuce();
-            $duobac = $this->duobacRepository->findOneByMatriculeAndPuce($rdvMatricule, $puce);
-
-            $dateFin = $duobac->getPurDateFin();
-            $dateDebut = $duobac->getPurDateDebut();
-            $contrainteDebut = $contrainteFin = null;
-
-            if ($dateDebut && (int)$dateDebut->format('Y') === $year) {
-                $contrainteDebut = $dateDebut;
-            }
-
-            if ($dateFin && (int)$dateFin->format('Y') === $year) {
-                $contrainteFin = $dateFin;
-            }
-
-            $pesees[] = $this->findByPuceAndYear($puce, $year, $contrainteDebut, $contrainteFin);
+        foreach ($duobacs as $duobac) {
+            $pesees[] = $this->findByPuceAndDatesConstraint($duobac->getPucNoPuce(), $duobac->getPurDateFin(), $duobac->getPurDateDebut());
         }
-
-        return array_merge(...$pesees);
+        $pesees = array_merge(...$pesees);
+        if ($year) {
+            $pesees = array_filter($pesees, function ($pesee) use ($year) {
+                return $pesee->getDatePesee()->format('Y') == $year;
+            });
+        }
+        return $pesees;
     }
 
     public function removeByYear(int $year)
@@ -131,7 +105,7 @@ class PeseeRepository extends ServiceEntityRepository
         $pesees = $this->createQueryBuilder('pesee')
             ->orderBy('pesee.date_pesee', 'ASC')
             ->andWhere('pesee.date_pesee LIKE :annee')
-            ->setParameter('annee', $year."%")
+            ->setParameter('annee', $year . "%")
             ->getQuery()
             ->getResult();
 
