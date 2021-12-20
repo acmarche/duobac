@@ -5,12 +5,13 @@
     <div class="card">
         <h3 class="card-header">Pesées </h3>
         <div class="card-body">
-
             <p>
                 <a class="nav-link" href="{{ path('duobac_pesee_all') }}">
-                    {{ (years|length) + 1 }} ans de duobac
+                    Toutes les années
                 </a>
             </p>
+
+            <h5>Sélection par année</h5>
             <ul class="list-group">
                 {% for year in years %}
                     <li class="list-group-item">
