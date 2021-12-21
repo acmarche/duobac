@@ -2,17 +2,17 @@
 
 namespace AcMarche\Duobac\Entity;
 
-use AcMarche\Duobac\Entity\Duobac;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="AcMarche\Duobac\Repository\UserRepository")
  * @ORM\Table(name="users")
  */
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id()
@@ -25,10 +25,9 @@ class User implements UserInterface
      * @var iterable $roles
      * @ORM\Column(type="array", nullable=true)
      */
-    private $roles = [];
+    private iterable $roles = [];
 
     /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
      */
     private ?string $password = null;
@@ -49,7 +48,7 @@ class User implements UserInterface
     private ?string $rdv_matricule = null;
 
     /**
-     * @var Duobac[]
+     * @var Duobac[] $duobacs
      *
      * @ORM\OneToMany(targetEntity=Duobac::class, mappedBy="user")
      */
