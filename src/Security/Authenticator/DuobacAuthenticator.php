@@ -24,13 +24,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
- * Essayer de voir les events
- * Si reponse null en cas de failure le manager va essayer un autre authenticator
- * @see \Symfony\Component\Security\Http\Authentication\AuthenticatorManager
- * @see UserCheckerListener::postCheckCredentials
- * @see UserProviderListener::checkPassport
- * @see CheckCredentialsListener
- * bin/console debug:event-dispatcher --dispatcher=security.event_dispatcher.main
+ *
  */
 class DuobacAuthenticator extends AbstractLoginFormAuthenticator
 {
