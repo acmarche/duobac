@@ -28,13 +28,14 @@ class PeseeController extends AbstractController
     private PeseeUtils $peseeUtils;
 
     public function __construct(
-        ChartHelper $chartHelper,
-        PeseeMoyenneRepository $peseeMoyenneRepository,
-        DuobacRepository $duobacRepository,
+        ChartHelper                  $chartHelper,
+        PeseeMoyenneRepository       $peseeMoyenneRepository,
+        DuobacRepository             $duobacRepository,
         SituationFamilialeRepository $situationFamilialeRepository,
-        PeseeRepository $peseeRepository,
-        PeseeUtils $peseeUtils
-    ) {
+        PeseeRepository              $peseeRepository,
+        PeseeUtils                   $peseeUtils
+    )
+    {
         $this->peseeMoyenneRepository = $peseeMoyenneRepository;
         $this->chartHelper = $chartHelper;
         $this->duobacRepository = $duobacRepository;
@@ -155,6 +156,7 @@ class PeseeController extends AbstractController
                 'pesees' => $pesees,
                 'chart' => $chart,
                 'totalUser' => $totalUser,
+                'dataMenage' => $dataMenage,
                 'totalMenage' => $totalMenage,
                 'charge' => $charge,
             ]

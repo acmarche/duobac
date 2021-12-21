@@ -5,16 +5,20 @@
         <th scope="col">Numéro de puce</th>
         <th scope="col">Date de pesée</th>
         <th scope="col">Poids (kg)</th>
-        <th scope="col">Moyenne ménages<br/><span class="text-muted">Basé sur le nombre à charge de {{ charge }}</span></th>
+        <th scope="col">
+            Moyenne ménages<br/>
+            <span class="text-muted">Basé sur le nombre à charge de {{ charge }}</span>
+        </th>
     </tr>
     </thead>
     <tbody>
     {% for pesee in pesees %}
+        {% set mois = pesee.datePesee|date('m') - 1 %}
         <tr>
             <td>{{ pesee.pucNoPuce }}</td>
             <td>{{ pesee.datePesee | date('d-m-Y') }}</td>
             <td>{{ pesee.poids|number_format(2,',') }}</td>
-            <td></td>
+            <td>{{ dataMenage[mois] ? dataMenage[mois] }}</td>
         </tr>
     {% endfor %}
     <tr>
