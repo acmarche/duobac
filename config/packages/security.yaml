@@ -12,7 +12,7 @@ security:
         property: rdv_matricule
   firewalls:
     main:
-      #anonymous: lazy
+      lazy: true
       provider: duobac_user_provider
       custom_authenticators:
         - AcMarche\Duobac\Security\Authenticator\DuobacAuthenticator
