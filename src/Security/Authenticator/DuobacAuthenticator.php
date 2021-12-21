@@ -78,9 +78,9 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
         $token = $request->request->get('_csrf_token', '');
 
         $duobac = $this->duobacRepository->findByRrnAndPuce($rrn, $puce);
+
         if ($duobac instanceof Duobac) {
-            $user = $this->userRepository->loadUserByIdentifier($rrn);
-            if (!$user) {
+            if (!$this->userRepository->loadUserByIdentifier($rrn)) {
                 $this->userFactory->create($duobac);
             }
         }
