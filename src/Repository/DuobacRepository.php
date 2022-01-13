@@ -35,13 +35,14 @@ class DuobacRepository extends ServiceEntityRepository
 
     /**
      * @param Duobac[] $duobacs
+     *
      * @return string[]
      */
     public function getPucesCitoyensByDuobacs(array $duobacs): array
     {
         $puces = [];
         foreach ($duobacs as $duobac) {
-            if (strlen($duobac->getRdvMatricule()) === 11) {
+            if (11 === \strlen($duobac->getRdvMatricule())) {
                 $puces[] = $duobac->getPucNoPuce();
             }
         }
@@ -57,7 +58,7 @@ class DuobacRepository extends ServiceEntityRepository
         $data = $this->findAll();
         $duobacs = [];
         foreach ($data as $duobac) {
-            if (strlen($duobac->getRdvMatricule()) == 11) {
+            if (11 == \strlen($duobac->getRdvMatricule())) {
                 $duobacs[] = $duobac;
             }
         }
@@ -67,6 +68,7 @@ class DuobacRepository extends ServiceEntityRepository
 
     /**
      * @param $matricule
+     *
      * @return array|Duobac[]
      */
     public function findByMatricule($matricule): array

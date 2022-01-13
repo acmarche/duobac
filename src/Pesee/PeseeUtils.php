@@ -7,21 +7,18 @@ use AcMarche\Duobac\Entity\PeseeMoyenne;
 use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
 use AcMarche\Duobac\Service\ArrayUtils;
 use AcMarche\Duobac\Service\DateUtils;
+use DateTime;
 
 class PeseeUtils
 {
-    private PeseeMoyenneRepository $peseeMoyenneRepository;
-
-    public function __construct(
-        PeseeMoyenneRepository $peseeMoyenneRepository
-    ) {
-        $this->peseeMoyenneRepository = $peseeMoyenneRepository;
+    public function __construct(private PeseeMoyenneRepository $peseeMoyenneRepository)
+    {
     }
 
     /**
      * @param iterable|PeseeMoyenne[] $pesees
      */
-    public function getTotal(iterable $pesees): float
+    public function getTotal(iterable $pesees): float|int
     {
         $total = 0;
         foreach ($pesees as $pesee) {
@@ -31,18 +28,13 @@ class PeseeUtils
         return $total;
     }
 
-    /**
-     *
-     * @param array $pesees
-     * @param int $year
-     */
     public function setMissingMonths(array $pesees, int $year, int $charge): array
     {
         foreach (DateUtils::getListeNumeroMoisWithOnedigit() as $numMois) {
             if (!isset($pesees[$numMois])) {
                 $pesees[$numMois]['poids'] = 0;
 
-                $date = \DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
+                $date = DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
                 $menage = $data['menage'] ?? $this->peseeMoyenneRepository->findOneByChargeAndDate($charge, $date);
                 $pesees[$numMois]['menage'] = $menage ? $menage->getPoids() : 0;
             }
@@ -60,9 +52,9 @@ class PeseeUtils
     {
         $all = [];
         foreach ($pesees as $pesee) {
-            $mois = (int)$pesee->getDatePesee()->format('m');
+            $mois = (int) $pesee->getDatePesee()->format('m');
             $poids = $pesee->getPoids();
-            $menagePoids = $pesee->getMoyenne() !== null ? $pesee->getMoyenne()->getPoids() : 0;
+            $menagePoids = null !== $pesee->getMoyenne() ? $pesee->getMoyenne()->getPoids() : 0;
 
             isset($all[$mois]['poids']) ? $all[$mois]['poids'] += $poids : $all[$mois]['poids'] = $poids;
             $all[$mois]['menage'] = $menagePoids;
@@ -93,9 +85,8 @@ class PeseeUtils
         foreach ($data as $year => $pesees) {
             $t = $this->groupByMonthsForOneYear($pesees);
             $all[$year] = array_sum($t);
-
         }
-        return ($all);
-    }
 
+        return $all;
+    }
 }

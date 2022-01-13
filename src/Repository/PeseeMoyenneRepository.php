@@ -29,14 +29,12 @@ class PeseeMoyenneRepository extends ServiceEntityRepository
             ->andWhere('pesee_moyenne.a_charge = :charge')
             ->setParameter('charge', $charge)
             ->andWhere('pesee_moyenne.date_pesee LIKE :date')
-            ->setParameter('date', $dateTime->format('Y-m')."%")
+            ->setParameter('date', $dateTime->format('Y-m').'%')
             ->orderBy('pesee_moyenne.date_pesee', 'ASC')
             ->getQuery()->getOneOrNullResult();
     }
 
     /**
-     * @param int $charge
-     * @param int $year
      * @return PeseeMoyenne[]|null
      */
     public function findByChargeAndYear(int $charge, int $year)
@@ -45,16 +43,16 @@ class PeseeMoyenneRepository extends ServiceEntityRepository
             ->andWhere('pesee_moyenne.a_charge = :charge')
             ->setParameter('charge', $charge)
             ->andWhere('pesee_moyenne.date_pesee LIKE :year')
-            ->setParameter('year', $year."%")
+            ->setParameter('year', $year.'%')
             ->orderBy('pesee_moyenne.date_pesee', 'ASC')
             ->getQuery()->getResult();
     }
 
-    public function deleteByYear(int $year)
+    public function deleteByYear(int $year): void
     {
         $moyennes = $this->createQueryBuilder('pesee_moyenne')
             ->andWhere('pesee_moyenne.date_pesee LIKE :year')
-            ->setParameter('year', $year."%")
+            ->setParameter('year', $year.'%')
             ->orderBy('pesee_moyenne.date_pesee', 'ASC')
             ->getQuery()->getResult();
 

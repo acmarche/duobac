@@ -10,20 +10,17 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class ChartHelper
 {
-    private ChartBuilderInterface $chartBuilder;
-
-    public function __construct(ChartBuilderInterface $chartBuilder)
+    public function __construct(private ChartBuilderInterface $chartBuilder)
     {
-        $this->chartBuilder = $chartBuilder;
     }
 
     /**
      * https://www.chartjs.org/docs/latest/general/data-structures.html
      * https://duobac.marche.be/pesee/parannee/2019
-     * http://duobac.local/pesee/2020
-     * @param array|Pesee[] $pesees
+     * http://duobac.local/pesee/2020.
+     *
+     * @param array|Pesee[]        $pesees
      * @param array|PeseeMoyenne[] $moyennes
-     * @return Chart
      */
     public function genereratePesee(array $pesees, array $moyennes): Chart
     {
@@ -58,7 +55,7 @@ class ChartHelper
                         'scaleLabel' => [
                             'display' => true,
                             'fontSize' => 16,
-                            'labelString' => "Poids en Kg",
+                            'labelString' => 'Poids en Kg',
                         ],
                         'ticks' => [
                             'min' => 0,

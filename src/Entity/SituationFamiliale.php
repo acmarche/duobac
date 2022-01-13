@@ -2,57 +2,27 @@
 
 namespace AcMarche\Duobac\Entity;
 
+use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Stringable;
 
-/**
- * @ORM\Table()
- * @ORM\Table("situation_familiale", uniqueConstraints={
- *     @ORM\UniqueConstraint(columns={"rdv_matricule", "annee", "puc_no_puce"})
- * })
- * @ORM\Entity(repositoryClass="AcMarche\Duobac\Repository\SituationFamilialeRepository")
- *
- */
-class SituationFamiliale
+#[ORM\Table(name: 'situation_familiale')]
+#[ORM\UniqueConstraint(columns: ['rdv_matricule', 'annee', 'puc_no_puce'])]
+#[ORM\Entity(repositoryClass: SituationFamilialeRepository::class)]
+class SituationFamiliale implements Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=15, nullable=false)
-     */
-    private ?string $rdv_matricule;
-
-    /**
-     * @ORM\Column(type="string", length=30, nullable=false)
-     */
-    private ?string $puc_no_puce;
-
-    /**
-     * @ORM\Column(type="integer", length=4, nullable=false)
-     */
-    private ?int $annee;
-
-    /**
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private ?int $a_charge;
-
-    public function __construct(string $rdv_matricule, string $puce, int $annee, int $a_charge)
+    public function __construct(#[ORM\Column(type: 'string', length: 15, nullable: false)] private ?string $rdv_matricule, #[ORM\Column(type: 'string', length: 30, nullable: false)] private ?string $puc_no_puce, #[ORM\Column(type: 'integer', length: 4, nullable: false)] private ?int $annee, #[ORM\Column(type: 'integer', nullable: false)] private ?int $a_charge)
     {
-        $this->rdv_matricule = $rdv_matricule;
-        $this->puc_no_puce = $puce;
-        $this->annee = $annee;
-        $this->a_charge = $a_charge;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return (string)$this->a_charge;
+        return (string) $this->a_charge;
     }
 
     public function getId(): ?int
@@ -60,7 +30,7 @@ class SituationFamiliale
         return $this->id;
     }
 
-    public function getRdvMatricule(): string
+    public function getRdvMatricule(): ?string
     {
         return $this->rdv_matricule;
     }
@@ -72,7 +42,7 @@ class SituationFamiliale
         return $this;
     }
 
-    public function getAnnee(): int
+    public function getAnnee(): ?int
     {
         return $this->annee;
     }
@@ -84,7 +54,7 @@ class SituationFamiliale
         return $this;
     }
 
-    public function getACharge(): int
+    public function getACharge(): ?int
     {
         return $this->a_charge;
     }
@@ -96,7 +66,7 @@ class SituationFamiliale
         return $this;
     }
 
-    public function getPucNoPuce(): string
+    public function getPucNoPuce(): ?string
     {
         return $this->puc_no_puce;
     }

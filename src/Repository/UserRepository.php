@@ -5,6 +5,7 @@ namespace AcMarche\Duobac\Repository;
 use AcMarche\Duobac\Doctrine\OrmCrudTrait;
 use AcMarche\Duobac\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -23,9 +24,10 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $username
      * @return int|mixed|string|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @throws NonUniqueResultException
+     *
      * @see UserProviderListener::checkPassport
      */
     public function loadUserByIdentifier(string $username): ?UserInterface

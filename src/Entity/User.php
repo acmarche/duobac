@@ -2,58 +2,40 @@
 
 namespace AcMarche\Duobac\Entity;
 
+use AcMarche\Duobac\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Stringable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @ORM\Entity(repositoryClass="AcMarche\Duobac\Repository\UserRepository")
- * @ORM\Table(name="users")
- */
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'users')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringable
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
-
     /**
      * @var iterable $roles
-     * @ORM\Column(type="array", nullable=true)
      */
+    #[ORM\Column(type: 'array', nullable: true)]
     private iterable $roles = [];
-
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     private ?string $password = null;
-
-    /**
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $nom = null;
-
-    /**
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $prenom = null;
-
-    /**
-     * @ORM\Column(type="string", length=15, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 15, nullable: false)]
     private ?string $rdv_matricule = null;
-
     /**
      * @var Duobac[] $duobacs
-     *
-     * @ORM\OneToMany(targetEntity=Duobac::class, mappedBy="user")
      */
+    #[ORM\OneToMany(targetEntity: Duobac::class, mappedBy: 'user')]
     private Collection $duobacs;
-
     private ?string $plain_password = null;
 
     public function __construct()
@@ -61,14 +43,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->duobacs = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return (string)$this->rdv_matricule;
+        return (string) $this->rdv_matricule;
     }
 
     public function getUserIdentifier(): string
     {
-        return (string)$this->rdv_matricule;
+        return (string) $this->rdv_matricule;
     }
 
     public function getId(): ?int
@@ -83,7 +65,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return (string)$this->rdv_matricule;
+        return (string) $this->rdv_matricule;
     }
 
     /**
@@ -105,17 +87,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
     public function getPlainPassword(): ?string
     {
         return $this->plain_password;
     }
 
-    /**
-     * @param null|string $plain_password
-     */
     public function setPlainPassword(?string $plain_password): void
     {
         $this->plain_password = $plain_password;
@@ -126,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return (string)$this->password;
+        return (string) $this->password;
     }
 
     public function setPassword(string $password): self
@@ -176,7 +152,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRdvMatricule(): string
+    public function getRdvMatricule(): ?string
     {
         return $this->rdv_matricule;
     }
@@ -191,7 +167,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection|Duobac[]
      */
-    public function getDuobacs(): array
+    public function getDuobacs(): Collection
     {
         return $this->duobacs;
     }

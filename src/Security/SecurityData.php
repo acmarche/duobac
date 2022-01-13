@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: jfsenechal
  * Date: 7/11/18
- * Time: 9:00
+ * Time: 9:00.
  */
 
 namespace AcMarche\Duobac\Security;

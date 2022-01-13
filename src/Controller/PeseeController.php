@@ -14,45 +14,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/pesee")
- * @IsGranted("ROLE_DUOBAC")
- */
+#[Route(path: '/pesee')]
+#[IsGranted(data: 'ROLE_DUOBAC')]
 class PeseeController extends AbstractController
 {
-    private PeseeMoyenneRepository $peseeMoyenneRepository;
-    private ChartHelper $chartHelper;
-    private DuobacRepository $duobacRepository;
-    private SituationFamilialeRepository $situationFamilialeRepository;
-    private PeseeRepository $peseeRepository;
-    private PeseeUtils $peseeUtils;
-
-    public function __construct(
-        ChartHelper                  $chartHelper,
-        PeseeMoyenneRepository       $peseeMoyenneRepository,
-        DuobacRepository             $duobacRepository,
-        SituationFamilialeRepository $situationFamilialeRepository,
-        PeseeRepository              $peseeRepository,
-        PeseeUtils                   $peseeUtils
-    )
+    public function __construct(private ChartHelper $chartHelper, private PeseeMoyenneRepository $peseeMoyenneRepository, private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository, private PeseeRepository $peseeRepository, private PeseeUtils $peseeUtils)
     {
-        $this->peseeMoyenneRepository = $peseeMoyenneRepository;
-        $this->chartHelper = $chartHelper;
-        $this->duobacRepository = $duobacRepository;
-        $this->situationFamilialeRepository = $situationFamilialeRepository;
-        $this->peseeRepository = $peseeRepository;
-        $this->peseeUtils = $peseeUtils;
     }
 
-    /**
-     * @Route("/index",name="duobac_pesee_index")
-     */
+    #[Route(path: '/index', name: 'duobac_pesee_index')]
     public function index(): Response
     {
         $user = $this->getUser();
         $years = [];
-
-        if ($user) {
+        if (null !== $user) {
             $years = $this->situationFamilialeRepository->getAllYearsByMatricule($user);
         }
 
@@ -64,28 +39,21 @@ class PeseeController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/all/year",name="duobac_pesee_all")
-     */
+    #[Route(path: '/all/year', name: 'duobac_pesee_all')]
     public function all(): Response
     {
         $user = $this->getUser();
         $rdvMatricule = $user->getRdvMatricule();
-
         $duobacs = $this->duobacRepository->findByMatricule($user->getRdvMatricule());
-
-        if (count($duobacs) == 0) {
+        if (0 == \count($duobacs)) {
             $this->addFlash('danger', 'Aucun duobac trouvé');
 
             return $this->redirectToRoute('duobac_home');
         }
-
         $years = $this->situationFamilialeRepository->getAllYearsByMatricule($rdvMatricule);
         $peseesMenage = $peseesUser = [];
-
         $totauxByYearMenage = [];
         $totalUser = $totalMenage = 0;
-
         foreach ($years as $year) {
             $peseesUser[$year] = $this->peseeRepository->findByDuobacsAndYear($duobacs, $year);
             $charge = $this->situationFamilialeRepository->getChargeByMatriculeAndYear($rdvMatricule, $year);
@@ -97,10 +65,8 @@ class PeseeController extends AbstractController
             $totalUser += $this->peseeUtils->getTotal($peseesUser[$year]);
             $totalMenage += $this->peseeUtils->getTotal($peseesMenage[$year]);
         }
-
         $dataUser = $this->peseeUtils->prepareForAllYears($peseesUser);
         $dataMenage = $this->peseeUtils->prepareForAllYears($peseesMenage);
-
         $chart = $this->chartHelper->genereratePesee(
             ArrayUtils::resetKeys($dataUser),
             ArrayUtils::resetKeys($dataMenage)
@@ -120,9 +86,7 @@ class PeseeController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/annee/{year}", name="duobac_by_year", methods={"GET"})
-     */
+    #[Route(path: '/annee/{year}', name: 'duobac_by_year', methods: ['GET'])]
     public function byYear(int $year): Response
     {
         $user = $this->getUser();
@@ -131,22 +95,14 @@ class PeseeController extends AbstractController
         $pesees = $this->peseeRepository->findByDuobacsAndYear($duobacs, $year);
         $data = $this->peseeUtils->groupByMonthsForOneYear($pesees);
         $totalUser = $this->peseeUtils->getTotal($pesees);
-
         $situation = $this->situationFamilialeRepository->findByMatriculeAndYear($rdvMatricule, $year, true);
-
-        if (!$situation) {
-            $charge = 0;
-        } else {
-            $charge = $situation->getACharge();
-        }
-
+        $charge = $situation ? $situation->getACharge() : 0;
         $peseesMenages = $this->peseeMoyenneRepository->findByChargeAndYear(
             $charge,
             $year
         );
         $totalMenage = $this->peseeUtils->getTotal($peseesMenages);
         $dataMenage = $this->peseeUtils->groupByMonthsForOneYear($peseesMenages);
-
         $chart = $this->chartHelper->genereratePesee($data, $dataMenage);
 
         return $this->render(

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace AcMarche\Duobac\Entity;
 
 class PeseeGraph

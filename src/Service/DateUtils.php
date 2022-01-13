@@ -3,21 +3,22 @@
  * Created by PhpStorm.
  * User: jfsenechal
  * Date: 15/11/18
- * Time: 14:32
+ * Time: 14:32.
  */
 
 namespace AcMarche\Duobac\Service;
 
+use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
-use DateTimeImmutable;
 
 class DateUtils
 {
     /**
-     * @param string $date
      * @param string $format
+     *
      * @return bool|DateTimeInterface
+     *
      * @throws Exception
      */
     public function convertStringToDateTime(string $date, $format = 'd/m/Y'): DateTimeImmutable
@@ -29,7 +30,7 @@ class DateUtils
         return $dateTime;
     }
 
-    public static function getAllMonths()
+    public static function getAllMonths(): array
     {
         return [
             0 => 'Janvier',
@@ -63,5 +64,4 @@ class DateUtils
     {
         return range(1, 12);
     }
-
 }

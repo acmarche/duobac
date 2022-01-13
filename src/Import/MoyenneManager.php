@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: jfsenechal
  * Date: 16/11/18
- * Time: 10:15
+ * Time: 10:15.
  */
 
 namespace AcMarche\Duobac\Import;
@@ -20,25 +20,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MoyenneManager
 {
-    private PeseeMoyenneRepository $peseeMoyenneRepository;
-    private PeseeRepository $peseeRepository;
-    private SituationFamilialeRepository $situationFamilialeRepository;
-    private DateUtils $dateUtils;
     private ?SymfonyStyle $io = null;
-    private DuobacRepository $duobacRepository;
 
-    public function __construct(
-        PeseeMoyenneRepository $peseeMoyenneRepository,
-        PeseeRepository $peseeRepository,
-        DuobacRepository $duobacRepository,
-        SituationFamilialeRepository $situationFamilialeRepository,
-        DateUtils $dateUtils
-    ) {
-        $this->peseeMoyenneRepository = $peseeMoyenneRepository;
-        $this->peseeRepository = $peseeRepository;
-        $this->situationFamilialeRepository = $situationFamilialeRepository;
-        $this->dateUtils = $dateUtils;
-        $this->duobacRepository = $duobacRepository;
+    public function __construct(private PeseeMoyenneRepository $peseeMoyenneRepository, private PeseeRepository $peseeRepository, private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository, private DateUtils $dateUtils)
+    {
     }
 
     public function execute(int $year): void
@@ -50,8 +35,9 @@ class MoyenneManager
 
     public function getInstance(string $charge, DateTimeInterface $dateTime): PeseeMoyenne
     {
-        if (($moyenne = $this->peseeMoyenneRepository->findOneBy(['date_pesee' => $dateTime, 'a_charge' => $charge]
-            )) === null) {
+        if (($moyenne = $this->peseeMoyenneRepository->findOneBy(
+            ['date_pesee' => $dateTime, 'a_charge' => $charge]
+        )) === null) {
             $moyenne = new PeseeMoyenne();
             $moyenne->setDatePesee($dateTime);
             $moyenne->setACharge($charge);
@@ -62,7 +48,6 @@ class MoyenneManager
     }
 
     /**
-     * @param int $year
      * @throws Exception
      */
     public function updateMoyenne(array $puces, int $year): void
@@ -72,12 +57,12 @@ class MoyenneManager
         foreach ($charges as $charge) {
             $this->io->title('A charge '.$charge['a_charge']);
             foreach (DateUtils::getListeNumeroMoisWith2digits() as $mois) {
-                $yearMonth = $year."-".$mois;
+                $yearMonth = $year.'-'.$mois;
                 $this->io->writeln($yearMonth);
 
                 $pesees = $this->peseeRepository->getPeseesByChargeByYearMonth($puces, $charge['a_charge'], $yearMonth);
                 $total = $moyenne = 0;
-                $count = count($pesees);
+                $count = \count($pesees);
                 if ($count > 0) {
                     foreach ($pesees as $pesee) {
                         $poids = $pesee->getPoids();
@@ -102,7 +87,8 @@ class MoyenneManager
         $this->io = $io;
     }
 
-    public function deleteByYear(int $year) {
+    public function deleteByYear(int $year): void
+    {
         $this->peseeMoyenneRepository->deleteByYear($year);
     }
 }

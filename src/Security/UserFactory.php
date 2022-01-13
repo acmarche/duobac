@@ -9,13 +9,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFactory
 {
-    private UserPasswordHasherInterface $userPasswordHasher;
-    private UserRepository $userRepository;
-
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository)
+    public function __construct(private UserPasswordHasherInterface $userPasswordHasher, private UserRepository $userRepository)
     {
-        $this->userPasswordHasher = $userPasswordHasher;
-        $this->userRepository = $userRepository;
     }
 
     public function create(Duobac $duobac): User
@@ -24,7 +19,7 @@ class UserFactory
         $user->setRdvMatricule($duobac->getRdvMatricule());
         $user->setNom($duobac->getRdvNom());
         $user->setPrenom($duobac->getRdvPrenom1());
-        if (!in_array(SecurityData::getRoleUser(), $user->getRoles())) {
+        if (!\in_array(SecurityData::getRoleUser(), $user->getRoles())) {
             $user->setRoles([SecurityData::getRoleUser()]);
         }
         $password = $this->generatePassword();
@@ -40,11 +35,10 @@ class UserFactory
     {
         $password = '';
 
-        for ($i = 0; $i < 6; $i++) {
-            $password .= rand(1, 9);
+        for ($i = 0; $i < 6; ++$i) {
+            $password .= random_int(1, 9);
         }
 
         return $password;
     }
-
 }

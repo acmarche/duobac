@@ -10,34 +10,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class DuobacController
- * @package AcMarche\Duobac\Controller
- * @Route("/duobac")
- * @IsGranted("ROLE_DUOBAC")
+ * Class DuobacController.
  */
+#[Route(path: '/duobac')]
+#[IsGranted(data: 'ROLE_DUOBAC')]
 class DuobacController extends AbstractController
 {
-    private DuobacRepository $duobacRepository;
-    private SituationFamilialeRepository $situationFamilialeRepository;
-
-    public function __construct(
-        DuobacRepository $duobacRepository,
-        SituationFamilialeRepository $situationFamilialeRepository
-    ) {
-        $this->duobacRepository = $duobacRepository;
-        $this->situationFamilialeRepository = $situationFamilialeRepository;
+    public function __construct(private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository)
+    {
     }
 
-    /**
-     * @Route("/",name="duobac_list")
-     *
-     */
+    #[Route(path: '/', name: 'duobac_list')]
     public function index(): Response
     {
         $matricule = $this->getUser()->getRdvMatricule();
         $duobacs = $this->duobacRepository->findByMatricule($matricule);
         $situations = $this->situationFamilialeRepository->findByMatricule($matricule);
-
         $coordonnees = $duobacs[0] ?? null;
 
         return $this->render(

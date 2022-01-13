@@ -3,14 +3,14 @@
  * Created by PhpStorm.
  * User: jfsenechal
  * Date: 16/11/18
- * Time: 14:18
+ * Time: 14:18.
  */
 
 namespace AcMarche\Duobac\DoctrineExtensions;
 
-use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
+use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
 
 class Month extends FunctionNode

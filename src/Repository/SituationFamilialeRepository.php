@@ -23,7 +23,8 @@ class SituationFamilialeRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne les differentes charges existantes
+     * Retourne les differentes charges existantes.
+     *
      * @return iterable ['a_charge'=>0]
      */
     public function getListeCharges()
@@ -36,7 +37,6 @@ class SituationFamilialeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $rdvMatricule
      * @return SituationFamiliale[]
      */
     public function findByMatricule(string $rdvMatricule): array
@@ -51,9 +51,7 @@ class SituationFamilialeRepository extends ServiceEntityRepository
     public function getAllYearsByMatricule(string $matricule): array
     {
         return array_unique(
-            array_map(function ($situation) {
-                return $situation->getAnnee();
-            }, $this->findByMatricule($matricule))
+            array_map(fn ($situation) => $situation->getAnnee(), $this->findByMatricule($matricule))
         );
     }
 
@@ -67,19 +65,14 @@ class SituationFamilialeRepository extends ServiceEntityRepository
             ->orderBy('situation_familiale.a_charge', 'ASC')
             ->getQuery()->getResult();
 
-        if (count($situations) > 0) {
+        if ((is_countable($situations) ? \count($situations) : 0) > 0) {
             return $situations[0]->getACharge();
         }
 
         return 0;
     }
 
-    /**
-     * @param string $rdvMatricule
-     * @param int $year
-     * @return array|SituationFamiliale[]|SituationFamiliale
-     */
-    public function findByMatriculeAndYear(string $rdvMatricule, int $year, bool $one = false)
+    public function findByMatriculeAndYear(string $rdvMatricule, int $year, bool $one = false): array|SituationFamiliale
     {
         $situations = $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.annee = :annee')
@@ -89,11 +82,11 @@ class SituationFamilialeRepository extends ServiceEntityRepository
             ->orderBy('situation_familiale.a_charge', 'ASC')
             ->getQuery()->getResult();
 
-        if ($one === false) {
+        if (!$one) {
             return $situations;
         }
 
-        if (count($situations) > 0) {
+        if ((is_countable($situations) ? \count($situations) : 0) > 0) {
             return $situations[0];
         }
 

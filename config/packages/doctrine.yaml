@@ -7,7 +7,6 @@ doctrine:
     mappings:
       AcMarche\Duobac:
         is_bundle: false
-        type: annotation
         dir: '%kernel.project_dir%/src/AcMarche/Duobac/src/Entity'
         prefix: 'AcMarche\Duobac'
         alias: AcMarche\Duobac

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: jfsenechal
  * Date: 30/10/18
- * Time: 16:13
+ * Time: 16:13.
  */
 
 namespace AcMarche\Duobac\Import;
@@ -14,28 +14,20 @@ use AcMarche\Duobac\Entity\SituationFamiliale;
 use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
 
 class ImportManager
 {
     private string $format = 'd/m/Y';
-    private SituationFamilialeRepository $situationFamilialeRepository;
-    private DuobacRepository $duobacRepository;
 
-    public function __construct(
-        DuobacRepository $duobacRepository,
-        SituationFamilialeRepository $situationFamilialeRepository
-    ) {
-        $this->situationFamilialeRepository = $situationFamilialeRepository;
-        $this->duobacRepository = $duobacRepository;
+    public function __construct(private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository)
+    {
     }
 
     public function updateSituationFamiliale(string $matricule, string $puce, int $year, int $aCharge): void
     {
         if (($situationFamiliale = $this->situationFamilialeRepository->findOneBy(
-                ['rdv_matricule' => $matricule, 'annee' => $year]
-            )) === null) {
+            ['rdv_matricule' => $matricule, 'annee' => $year]
+        )) === null) {
             $situationFamiliale = new SituationFamiliale($matricule, $puce, $year, $aCharge);
             $this->situationFamilialeRepository->persist($situationFamiliale);
         }
@@ -54,22 +46,22 @@ class ImportManager
         $nom = $data[1];
         $prenom = $data[2];
         $codePostal = $data[3];
-        $codeRue = (int)($data[4]);
+        $codeRue = (int) ($data[4]);
         $rue = $data[5];
         $adresseNumero = $data[6];
         $adresseIndice = $data[7];
         $adresseBoite = $data[8];
-        $codeRedevable = (int)$data[9];
-        $codeClass = (int)$data[10];
-        $aCharge = (int)($data[11]);
+        $codeRedevable = (int) $data[9];
+        $codeClass = (int) $data[10];
+        $aCharge = (int) ($data[11]);
         $puce = $data[12];
         $numContainer = $data[13];
         $purDateDebut = $data[14];
         $purDateFin = $data[15];
         $codeTarif = $data[16];
-        $codeCapacite = (int)($data[17]);
-        $codeClef = (int)($data[18]);
-        $codeDechet = (int)($data[19]);
+        $codeCapacite = (int) ($data[17]);
+        $codeClef = (int) ($data[18]);
+        $codeDechet = (int) ($data[19]);
 
         if (($duobac = $this->duobacRepository->findOneByMatriculeAndPuce($matricule, $puce)) === null) {
             $duobac = new Duobac($matricule, $puce);
@@ -102,29 +94,29 @@ class ImportManager
 
         $this->updateSituationFamiliale($matricule, $puce, $year, $aCharge);
         $i = 20;
-        $max = count($data);
+        $max = \count($data);
 
         if ($max > 20) {
             while ($i < $max) {
                 $date = $data[$i];
-                $i += 1;
+                ++$i;
                 $pesee = $data[$i];
-                if ($pesee != null && $date != null) {
+                if (null != $pesee && null != $date) {
                     $date = DateTime::createFromFormat($this->format, $date);
                     $pesee = preg_replace('#,#', '.', $pesee);
                     $this->insertReleve($puce, $date, $pesee, $aCharge);
                 }
-                $i += 1;
+                ++$i;
             }
         }
         $this->duobacRepository->flush();
     }
 
-    function getLines($file): iterable
+    public function getLines($file): iterable
     {
         $handle = fopen($file, 'r');
         try {
-            while (($line = fgetcsv($handle, 1000, "|")) !== false) {
+            while (($line = fgetcsv($handle, 1000, '|')) !== false) {
                 yield $line;
             }
         } finally {
@@ -132,10 +124,7 @@ class ImportManager
         }
     }
 
-    /**
-     * @param DateTime|DateTimeImmutable $date
-     */
-    public function insertReleve(string $puce, DateTimeInterface $date, float $poid, int $acharge): void
+    public function insertReleve(string $puce, \DateTime|\DateTimeImmutable $date, float $poid, int $acharge): void
     {
         $pesee = new Pesee($puce, $date, $poid, $acharge);
         $this->duobacRepository->persist($pesee);
@@ -143,7 +132,6 @@ class ImportManager
 
     public function skip($matricule): bool
     {
-        return !(preg_match("#\\d+#", $matricule) && strlen($matricule) > 2);
+        return !(preg_match('#\\d+#', $matricule) && \strlen($matricule) > 2);
     }
-
 }

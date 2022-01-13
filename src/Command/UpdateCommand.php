@@ -15,24 +15,15 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class UpdateCommand extends Command
 {
     protected static $defaultName = 'duobac:update';
-
-    private ImportManager $importManager;
-    private ParameterBagInterface $parameterBag;
     private array $types = ['duobac', 'moyenne'];
-    private MoyenneManager $moyenneManager;
-    private PeseeRepository $peseeRepository;
 
     public function __construct(
-        ImportManager $importManager,
-        MoyenneManager $moyenneManager,
-        PeseeRepository $peseeRepository,
-        ParameterBagInterface $parameterBag
+        private ImportManager $importManager,
+        private MoyenneManager $moyenneManager,
+        private PeseeRepository $peseeRepository,
+        private ParameterBagInterface $parameterBag
     ) {
         parent::__construct();
-        $this->importManager = $importManager;
-        $this->parameterBag = $parameterBag;
-        $this->moyenneManager = $moyenneManager;
-        $this->peseeRepository = $peseeRepository;
     }
 
     protected function configure(): void
@@ -46,32 +37,32 @@ class UpdateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $year = (int)$input->getArgument('annee');
+        $year = (int) $input->getArgument('annee');
         $type = $input->getArgument('type');
 
-        if (!in_array($type, $this->types)) {
+        if (!\in_array($type, $this->types)) {
             $io->error('Erreur pour le type, les choix possibles sont: '.implode(',', $this->types));
 
             return Command::FAILURE;
         }
 
-        if (!$year) {
+        if (0 === $year) {
             return Command::FAILURE;
         }
 
         $file = $this->parameterBag->get('kernel.project_dir').'/data/Pesees2021.csv';
 
-        if ($type === 'duobac') {
+        if ('duobac' === $type) {
             $i = 0;
             $this->peseeRepository->removeByYear($year);
             foreach ($this->importManager->getLines($file) as $data) {
                 $io->writeln($data[1].' '.$i);
                 $this->importManager->treatment($data, $year);
-                $i++;
+                ++$i;
             }
         }
 
-        if ($type === 'moyenne') {
+        if ('moyenne' === $type) {
             $output->writeln($year);
             $this->moyenneManager->deleteByYear($year);
             $this->moyenneManager->setIo($io);

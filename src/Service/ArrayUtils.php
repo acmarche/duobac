@@ -13,5 +13,4 @@ class ArrayUtils
     {
         return array_values($data);
     }
-
 }

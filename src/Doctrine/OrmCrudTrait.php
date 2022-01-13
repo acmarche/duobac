@@ -1,8 +1,6 @@
 <?php
 
-
 namespace AcMarche\Duobac\Doctrine;
-
 
 use Doctrine\ORM\EntityManager;
 
