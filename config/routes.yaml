@@ -1,3 +1,0 @@
-duobac:
-    resource: ../../src/AcMarche/Duobac/Controller/
-    type: annotation
