@@ -37,7 +37,7 @@ class UpdateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $year = (int) $input->getArgument('annee');
+        $year = (int)$input->getArgument('annee');
         $type = $input->getArgument('type');
 
         if (!\in_array($type, $this->types)) {
@@ -47,10 +47,13 @@ class UpdateCommand extends Command
         }
 
         if (0 === $year) {
+            $io->error('Erreur pour année');
+
             return Command::FAILURE;
         }
 
-        $file = $this->parameterBag->get('kernel.project_dir').'/data/Pesees2021.csv';
+        $fileName = "Pesees$year.csv";
+        $file = $this->parameterBag->get('kernel.project_dir').'/data/'.$fileName;
 
         if ('duobac' === $type) {
             $i = 0;
