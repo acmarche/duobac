@@ -6,7 +6,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension(
         'twig',
         [
-            'form_themes' => ['bootstrap_4_layout.html.twig'],
+            'form_themes' => ['bootstrap_5_layout.html.twig'],
             'paths' => [
                 '%kernel.project_dir%/src/AcMarche/Duobac/templates' => 'AcMarcheDuobac',
             ],
