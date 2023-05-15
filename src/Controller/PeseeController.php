@@ -9,17 +9,23 @@ use AcMarche\Duobac\Repository\PeseeMoyenneRepository;
 use AcMarche\Duobac\Repository\PeseeRepository;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use AcMarche\Duobac\Service\ArrayUtils;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/pesee')]
-#[IsGranted(data: 'ROLE_DUOBAC')]
+#[IsGranted('ROLE_DUOBAC')]
 class PeseeController extends AbstractController
 {
-    public function __construct(private ChartHelper $chartHelper, private PeseeMoyenneRepository $peseeMoyenneRepository, private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository, private PeseeRepository $peseeRepository, private PeseeUtils $peseeUtils)
-    {
+    public function __construct(
+        private ChartHelper $chartHelper,
+        private PeseeMoyenneRepository $peseeMoyenneRepository,
+        private DuobacRepository $duobacRepository,
+        private SituationFamilialeRepository $situationFamilialeRepository,
+        private PeseeRepository $peseeRepository,
+        private PeseeUtils $peseeUtils
+    ) {
     }
 
     #[Route(path: '/index', name: 'duobac_pesee_index')]

@@ -4,20 +4,20 @@ namespace AcMarche\Duobac\Controller;
 
 use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Class DuobacController.
- */
+
 #[Route(path: '/duobac')]
-#[IsGranted(data: 'ROLE_DUOBAC')]
+#[IsGranted('ROLE_DUOBAC')]
 class DuobacController extends AbstractController
 {
-    public function __construct(private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository)
-    {
+    public function __construct(
+        private DuobacRepository $duobacRepository,
+        private SituationFamilialeRepository $situationFamilialeRepository
+    ) {
     }
 
     #[Route(path: '/', name: 'duobac_list')]
