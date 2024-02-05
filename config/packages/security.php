@@ -36,7 +36,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ],
         'form_login' => [],
         'entry_point' => DuobacAuthenticator::class,
-        'switch_user' => true,
+        'login_throttling' => [
+            'max_attempts' => 6, //per minute...
+        ],
     ];
 
     $main['custom_authenticator'] = $authenticators;

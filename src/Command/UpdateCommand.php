@@ -5,6 +5,7 @@ namespace AcMarche\Duobac\Command;
 use AcMarche\Duobac\Import\ImportManager;
 use AcMarche\Duobac\Import\MoyenneManager;
 use AcMarche\Duobac\Repository\PeseeRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,16 +13,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
+#[AsCommand(
+    name: 'duobac:update',
+    description: 'Mise à jour des relevés',
+)]
 class UpdateCommand extends Command
 {
-    protected static $defaultName = 'duobac:update';
     private array $types = ['duobac', 'moyenne'];
 
     public function __construct(
-        private ImportManager $importManager,
-        private MoyenneManager $moyenneManager,
-        private PeseeRepository $peseeRepository,
-        private ParameterBagInterface $parameterBag
+        private readonly ImportManager $importManager,
+        private readonly MoyenneManager $moyenneManager,
+        private readonly PeseeRepository $peseeRepository,
+        private readonly ParameterBagInterface $parameterBag
     ) {
         parent::__construct();
     }
@@ -29,7 +33,6 @@ class UpdateCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Mise à jour des releves')
             ->addArgument('annee', InputArgument::REQUIRED, 'Indiquée l\'année')
             ->addArgument('type', InputArgument::REQUIRED, 'Choix:'.implode(',', $this->types));
     }

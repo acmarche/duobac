@@ -13,8 +13,7 @@
     }
   ],
   "require": {
-    "php": ">=7.4",
-    "beberlei/doctrineextensions": "^1.2",
+    "php": ">=8.2",
     "khill/lavacharts": "^3.1"
   },
   "autoload": {

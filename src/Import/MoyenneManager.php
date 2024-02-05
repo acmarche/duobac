@@ -22,8 +22,13 @@ class MoyenneManager
 {
     private ?SymfonyStyle $io = null;
 
-    public function __construct(private PeseeMoyenneRepository $peseeMoyenneRepository, private PeseeRepository $peseeRepository, private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository, private DateUtils $dateUtils)
-    {
+    public function __construct(
+        private readonly PeseeMoyenneRepository $peseeMoyenneRepository,
+        private readonly PeseeRepository $peseeRepository,
+        private readonly DuobacRepository $duobacRepository,
+        private readonly SituationFamilialeRepository $situationFamilialeRepository,
+        private readonly DateUtils $dateUtils
+    ) {
     }
 
     public function execute(int $year): void
@@ -36,8 +41,8 @@ class MoyenneManager
     public function getInstance(string $charge, DateTimeInterface $dateTime): PeseeMoyenne
     {
         if (($moyenne = $this->peseeMoyenneRepository->findOneBy(
-            ['date_pesee' => $dateTime, 'a_charge' => $charge]
-        )) === null) {
+                ['date_pesee' => $dateTime, 'a_charge' => $charge]
+            )) === null) {
             $moyenne = new PeseeMoyenne();
             $moyenne->setDatePesee($dateTime);
             $moyenne->setACharge($charge);

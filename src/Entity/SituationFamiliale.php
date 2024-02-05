@@ -16,13 +16,17 @@ class SituationFamiliale implements Stringable
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
 
-    public function __construct(#[ORM\Column(type: 'string', length: 15, nullable: false)] private ?string $rdv_matricule, #[ORM\Column(type: 'string', length: 30, nullable: false)] private ?string $puc_no_puce, #[ORM\Column(type: 'integer', length: 4, nullable: false)] private ?int $annee, #[ORM\Column(type: 'integer', nullable: false)] private ?int $a_charge)
-    {
+    public function __construct(
+        #[ORM\Column(type: 'string', length: 15, nullable: false)] private ?string $rdv_matricule,
+        #[ORM\Column(type: 'string', length: 30, nullable: false)] private ?string $puc_no_puce,
+        #[ORM\Column(type: 'integer', length: 4, nullable: false)] private ?int $annee,
+        #[ORM\Column(type: 'integer', nullable: false)] private ?int $a_charge
+    ) {
     }
 
     public function __toString(): string
     {
-        return (string) $this->a_charge;
+        return (string)$this->a_charge;
     }
 
     public function getId(): ?int

@@ -11,7 +11,7 @@ use DateTime;
 
 class PeseeUtils
 {
-    public function __construct(private PeseeMoyenneRepository $peseeMoyenneRepository)
+    public function __construct(private readonly PeseeMoyenneRepository $peseeMoyenneRepository)
     {
     }
 
@@ -52,7 +52,7 @@ class PeseeUtils
     {
         $all = [];
         foreach ($pesees as $pesee) {
-            $mois = (int) $pesee->getDatePesee()->format('m');
+            $mois = (int)$pesee->getDatePesee()->format('m');
             $poids = $pesee->getPoids();
             $menagePoids = null !== $pesee->getMoyenne() ? $pesee->getMoyenne()->getPoids() : 0;
 

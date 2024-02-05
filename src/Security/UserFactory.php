@@ -9,8 +9,10 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFactory
 {
-    public function __construct(private UserPasswordHasherInterface $userPasswordHasher, private UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly UserRepository $userRepository
+    ) {
     }
 
     public function create(Duobac $duobac): User

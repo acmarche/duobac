@@ -29,8 +29,14 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator, private UserRepository $userRepository, private DuobacRepository $duobacRepository, private UserFactory $userFactory, private ParameterBagInterface $parameterBag, private LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly UserRepository $userRepository,
+        private readonly DuobacRepository $duobacRepository,
+        private readonly UserFactory $userFactory,
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     public function supports(Request $request): bool
@@ -63,7 +69,9 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
                 new CsrfTokenBadge('authenticate', $token),
             ];
 
-        $credentials = new CustomCredentials(fn ($credentials, UserInterface $user): bool => $user->getUserIdentifier() === $credentials, $rrn); //ici je pourrais mettre [$rrn, $puce] et y acceder via credentials[0]
+        $credentials = new CustomCredentials(
+            fn($credentials, UserInterface $user): bool => $user->getUserIdentifier() === $credentials, $rrn
+        ); //ici je pourrais mettre [$rrn, $puce] et y acceder via credentials[0]
 
         return new Passport(
             new UserBadge($rrn),

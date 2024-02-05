@@ -19,15 +19,17 @@ class ImportManager
 {
     private string $format = 'd/m/Y';
 
-    public function __construct(private DuobacRepository $duobacRepository, private SituationFamilialeRepository $situationFamilialeRepository)
-    {
+    public function __construct(
+        private readonly DuobacRepository $duobacRepository,
+        private readonly SituationFamilialeRepository $situationFamilialeRepository
+    ) {
     }
 
     public function updateSituationFamiliale(string $matricule, string $puce, int $year, int $aCharge): void
     {
         if (($situationFamiliale = $this->situationFamilialeRepository->findOneBy(
-            ['rdv_matricule' => $matricule, 'annee' => $year]
-        )) === null) {
+                ['rdv_matricule' => $matricule, 'annee' => $year]
+            )) === null) {
             $situationFamiliale = new SituationFamiliale($matricule, $puce, $year, $aCharge);
             $this->situationFamilialeRepository->persist($situationFamiliale);
         }
@@ -46,22 +48,22 @@ class ImportManager
         $nom = $data[1];
         $prenom = $data[2];
         $codePostal = $data[3];
-        $codeRue = (int) ($data[4]);
+        $codeRue = (int)($data[4]);
         $rue = $data[5];
         $adresseNumero = $data[6];
         $adresseIndice = $data[7];
         $adresseBoite = $data[8];
-        $codeRedevable = (int) $data[9];
-        $codeClass = (int) $data[10];
-        $aCharge = (int) ($data[11]);
+        $codeRedevable = (int)$data[9];
+        $codeClass = (int)$data[10];
+        $aCharge = (int)($data[11]);
         $puce = $data[12];
         $numContainer = $data[13];
         $purDateDebut = $data[14];
         $purDateFin = $data[15];
         $codeTarif = $data[16];
-        $codeCapacite = (int) ($data[17]);
-        $codeClef = (int) ($data[18]);
-        $codeDechet = (int) ($data[19]);
+        $codeCapacite = (int)($data[17]);
+        $codeClef = (int)($data[18]);
+        $codeDechet = (int)($data[19]);
 
         if (($duobac = $this->duobacRepository->findOneByMatriculeAndPuce($matricule, $puce)) === null) {
             $duobac = new Duobac($matricule, $puce);

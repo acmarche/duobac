@@ -11,7 +11,7 @@ use AcMarche\Duobac\Repository\SituationFamilialeRepository;
 use AcMarche\Duobac\Service\ArrayUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/pesee')]
@@ -19,12 +19,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PeseeController extends AbstractController
 {
     public function __construct(
-        private ChartHelper $chartHelper,
-        private PeseeMoyenneRepository $peseeMoyenneRepository,
-        private DuobacRepository $duobacRepository,
-        private SituationFamilialeRepository $situationFamilialeRepository,
-        private PeseeRepository $peseeRepository,
-        private PeseeUtils $peseeUtils
+        private readonly ChartHelper $chartHelper,
+        private readonly PeseeMoyenneRepository $peseeMoyenneRepository,
+        private readonly DuobacRepository $duobacRepository,
+        private readonly SituationFamilialeRepository $situationFamilialeRepository,
+        private readonly PeseeRepository $peseeRepository,
+        private readonly PeseeUtils $peseeUtils
     ) {
     }
 

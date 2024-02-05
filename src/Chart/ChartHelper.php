@@ -19,7 +19,7 @@ class ChartHelper
      * https://duobac.marche.be/pesee/parannee/2019
      * http://duobac.local/pesee/2020.
      *
-     * @param array|Pesee[]        $pesees
+     * @param array|Pesee[] $pesees
      * @param array|PeseeMoyenne[] $moyennes
      */
     public function genereratePesee(array $pesees, array $moyennes): Chart
