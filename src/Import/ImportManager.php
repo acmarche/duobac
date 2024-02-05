@@ -33,7 +33,7 @@ class ImportManager
             $situationFamiliale = new SituationFamiliale($matricule, $puce, $year, $aCharge);
             $this->situationFamilialeRepository->persist($situationFamiliale);
         }
-        $situationFamiliale->setACharge($aCharge);
+        $situationFamiliale->a_charge = $aCharge;
         $this->situationFamilialeRepository->flush();
     }
 
@@ -70,27 +70,27 @@ class ImportManager
             $this->duobacRepository->persist($duobac);
         }
 
-        $duobac->setRdvNom(utf8_encode($nom));
-        $duobac->setRdvPrenom1(utf8_encode($prenom));
-        $duobac->setLocCodePost($codePostal);
-        $duobac->setRueCodeRue($codeRue);
-        $duobac->setRueLib1lg(utf8_encode($rue));
-        $duobac->setAdrNumero($adresseNumero);
-        $duobac->setAdrIndice($adresseIndice);
-        $duobac->setAdrBoite(utf8_encode($adresseBoite));
-        $duobac->setRdvCodRedevable($codeRedevable);
-        $duobac->setRdvCodClasse($codeClass);
-        $duobac->setPucNoConteneur(utf8_encode($numContainer));
+        $duobac->rdv_nom = $nom;
+        $duobac->rdv_prenom_1 = $prenom;
+        $duobac->loc_code_post = $codePostal;
+        $duobac->rue_code_rue = $codeRue;
+        $duobac->rue_lib_1lg = $rue;
+        $duobac->adr_numero = $adresseNumero;
+        $duobac->adr_indice = $adresseIndice;
+        $duobac->adr_boite = $adresseBoite;
+        $duobac->rdv_cod_redevable = $codeRedevable;
+        $duobac->rdv_cod_classe = $codeClass;
+        $duobac->puc_no_conteneur = $numContainer;
         if ($purDateDebut) {
-            $duobac->setPurDateDebut(DateTime::createFromFormat($this->format, $purDateDebut));
+            $duobac->pur_date_debut = DateTime::createFromFormat($this->format, $purDateDebut);
         }
         if ($purDateFin) {
-            $duobac->setPurDateFin(DateTime::createFromFormat($this->format, $purDateFin));
+            $duobac->pur_date_fin = DateTime::createFromFormat($this->format, $purDateFin);
         }
-        $duobac->setPurCodTarification($codeTarif);
-        $duobac->setPucCodCapacite($codeCapacite);
-        $duobac->setPurCodClef($codeClef);
-        $duobac->setPucCodDechet($codeDechet);
+        $duobac->pur_cod_tarification = $codeTarif;
+        $duobac->puc_cod_capacite = $codeCapacite;
+        $duobac->pur_cod_clef = $codeClef;
+        $duobac->puc_cod_dechet = $codeDechet;
 
         $this->duobacRepository->flush();
 

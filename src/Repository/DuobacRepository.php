@@ -42,8 +42,8 @@ class DuobacRepository extends ServiceEntityRepository
     {
         $puces = [];
         foreach ($duobacs as $duobac) {
-            if (11 === \strlen($duobac->getRdvMatricule())) {
-                $puces[] = $duobac->getPucNoPuce();
+            if (11 === \strlen($duobac->rdv_matricule)) {
+                $puces[] = $duobac->puc_no_puce;
             }
         }
 
@@ -58,7 +58,7 @@ class DuobacRepository extends ServiceEntityRepository
         $data = $this->findAll();
         $duobacs = [];
         foreach ($data as $duobac) {
-            if (11 == \strlen($duobac->getRdvMatricule())) {
+            if (11 == \strlen($duobac->rdv_matricule)) {
                 $duobacs[] = $duobac;
             }
         }

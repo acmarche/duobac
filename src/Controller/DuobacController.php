@@ -23,7 +23,7 @@ class DuobacController extends AbstractController
     #[Route(path: '/', name: 'duobac_list')]
     public function index(): Response
     {
-        $matricule = $this->getUser()->getRdvMatricule();
+        $matricule = $this->getUser()->rdv_matricule;
         $duobacs = $this->duobacRepository->findByMatricule($matricule);
         $situations = $this->situationFamilialeRepository->findByMatricule($matricule);
         $coordonnees = $duobacs[0] ?? null;

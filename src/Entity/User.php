@@ -14,29 +14,25 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: 'users')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringable
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-    /**
-     * @var iterable $roles
-     */
-    #[ORM\Column(type: 'array', nullable: true)]
-    private iterable $roles = [];
+    use IdTrait;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    public array $roles = [];
     #[ORM\Column(type: 'string')]
-    private ?string $password = null;
+    public ?string $password = null;
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $nom = null;
+    public ?string $nom = null;
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $prenom = null;
+    public ?string $prenom = null;
     #[ORM\Column(type: 'string', length: 15, nullable: false)]
-    private ?string $rdv_matricule = null;
+    public ?string $rdv_matricule = null;
     /**
      * @var Duobac[] $duobacs
      */
     #[ORM\OneToMany(targetEntity: Duobac::class, mappedBy: 'user')]
-    private Collection $duobacs;
-    private ?string $plain_password = null;
+    public Collection $duobacs;
+
+    public ?string $plain_password = null;
 
     public function __construct()
     {
@@ -45,12 +41,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringa
 
     public function __toString(): string
     {
-        return (string) $this->rdv_matricule;
+        return (string)$this->rdv_matricule;
     }
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->rdv_matricule;
+        return (string)$this->rdv_matricule;
     }
 
     public function getId(): ?int
@@ -65,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringa
      */
     public function getUsername(): string
     {
-        return (string) $this->rdv_matricule;
+        return (string)$this->rdv_matricule;
     }
 
     /**
@@ -102,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringa
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -128,50 +124,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringa
         // $this->plainPassword = null;
     }
 
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(?string $nom): self
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(?string $prenom): self
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getRdvMatricule(): ?string
-    {
-        return $this->rdv_matricule;
-    }
-
-    public function setRdvMatricule(string $rdv_matricule): self
-    {
-        $this->rdv_matricule = $rdv_matricule;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Duobac[]
-     */
-    public function getDuobacs(): Collection
-    {
-        return $this->duobacs;
-    }
-
     public function addDuobac(Duobac $duobac): self
     {
         if (!$this->duobacs->contains($duobac)) {
@@ -187,8 +139,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringa
         if ($this->duobacs->contains($duobac)) {
             $this->duobacs->removeElement($duobac);
             // set the owning side to null (unless already changed)
-            if ($duobac->getUser() === $this) {
-                $duobac->setUser(null);
+            if ($duobac->user === $this) {
+                $duobac->user = null;
             }
         }
 

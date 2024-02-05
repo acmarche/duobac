@@ -81,11 +81,11 @@ class PeseeRepository extends ServiceEntityRepository
     {
         $pesees = [[]];
         foreach ($duobacs as $duobac) {
-            $pesees[] = $this->findByPuceAndDatesConstraint($duobac->getPucNoPuce(), $duobac->getPurDateDebut(), $duobac->getPurDateFin());
+            $pesees[] = $this->findByPuceAndDatesConstraint($duobac->puc_no_puce, $duobac->pur_date_debut, $duobac->pur_date_fin);
         }
         $pesees = array_merge(...$pesees);
         if (0 !== $year) {
-            $pesees = array_filter($pesees, fn ($pesee) => $pesee->getDatePesee()->format('Y') == $year);
+            $pesees = array_filter($pesees, fn ($pesee) => $pesee->date_pesee->format('Y') == $year);
         }
 
         return $pesees;

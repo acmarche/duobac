@@ -22,7 +22,7 @@ class PeseeUtils
     {
         $total = 0;
         foreach ($pesees as $pesee) {
-            $total += $pesee->getPoids();
+            $total += $pesee->poids;
         }
 
         return $total;
@@ -36,7 +36,7 @@ class PeseeUtils
 
                 $date = DateTime::createFromFormat('Y-m-d', $year.'-'.$numMois.'-01');
                 $menage = $data['menage'] ?? $this->peseeMoyenneRepository->findOneByChargeAndDate($charge, $date);
-                $pesees[$numMois]['menage'] = $menage ? $menage->getPoids() : 0;
+                $pesees[$numMois]['menage'] = $menage ? $menage->poids : 0;
             }
         }
 
@@ -46,15 +46,15 @@ class PeseeUtils
     }
 
     /**
-     * @param iterable|Pesee[] $pesees
+     * @param Pesee[] $pesees
      */
     public function groupPeseesByMonth(iterable $pesees): array
     {
         $all = [];
         foreach ($pesees as $pesee) {
-            $mois = (int)$pesee->getDatePesee()->format('m');
-            $poids = $pesee->getPoids();
-            $menagePoids = null !== $pesee->getMoyenne() ? $pesee->getMoyenne()->getPoids() : 0;
+            $mois = (int)$pesee->date_pesee->format('m');
+            $poids = $pesee->poids;
+            $menagePoids = null !== $pesee->moyenne ? $pesee->moyenne->poids : 0;
 
             isset($all[$mois]['poids']) ? $all[$mois]['poids'] += $poids : $all[$mois]['poids'] = $poids;
             $all[$mois]['menage'] = $menagePoids;
@@ -70,7 +70,7 @@ class PeseeUtils
     {
         $data = ArrayUtils::initArraMonths();
         foreach ($pesees as $pesee) {
-            $data[$pesee->getDatePesee()->format('n')] += $pesee->getPoids();
+            $data[$pesee->date_pesee->format('n')] += $pesee->poids;
         }
 
         return ArrayUtils::resetKeys($data);

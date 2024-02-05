@@ -18,9 +18,9 @@ class UserFactory
     public function create(Duobac $duobac): User
     {
         $user = new User();
-        $user->setRdvMatricule($duobac->getRdvMatricule());
-        $user->setNom($duobac->getRdvNom());
-        $user->setPrenom($duobac->getRdvPrenom1());
+        $user->rdv_matricule = $duobac->rdv_matricule;
+        $user->nom = $duobac->rdv_nom;
+        $user->prenom = $duobac->rdv_prenom_1;
         if (!\in_array(SecurityData::getRoleUser(), $user->getRoles())) {
             $user->setRoles([SecurityData::getRoleUser()]);
         }

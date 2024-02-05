@@ -44,8 +44,8 @@ class MoyenneManager
                 ['date_pesee' => $dateTime, 'a_charge' => $charge]
             )) === null) {
             $moyenne = new PeseeMoyenne();
-            $moyenne->setDatePesee($dateTime);
-            $moyenne->setACharge($charge);
+            $moyenne->date_pesee = $dateTime;
+            $moyenne->a_charge = $charge;
             $this->peseeMoyenneRepository->persist($moyenne);
         }
 
@@ -70,7 +70,7 @@ class MoyenneManager
                 $count = \count($pesees);
                 if ($count > 0) {
                     foreach ($pesees as $pesee) {
-                        $poids = $pesee->getPoids();
+                        $poids = $pesee->poids;
                         //    $this->io->writeln($poids);
                         $total += $poids;
                     }
@@ -81,7 +81,7 @@ class MoyenneManager
                 $date = $this->dateUtils->convertStringToDateTime($yearMonth.'-01', 'Y-m-d');
 
                 $peseeMoyenne = $this->getInstance($charge['a_charge'], $date);
-                $peseeMoyenne->setPoids($moyenne);
+                $peseeMoyenne->poids = $moyenne;
             }
         }
         $this->peseeMoyenneRepository->flush();

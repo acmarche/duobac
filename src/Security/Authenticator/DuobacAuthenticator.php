@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
@@ -58,7 +58,7 @@ class DuobacAuthenticator extends AbstractLoginFormAuthenticator
         $duobac = $this->duobacRepository->findByRrnAndPuce($rrn, $puce);
 
         if (!$duobac instanceof Duobac) {
-            throw new AuthenticationException('Duobac not found with puce and rrn');
+            throw new UserNotFoundException('Duobac not found with puce and rrn');
         }
         if (null === $this->userRepository->loadUserByIdentifier($rrn)) {
             $this->userFactory->create($duobac);

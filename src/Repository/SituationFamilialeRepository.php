@@ -51,7 +51,7 @@ class SituationFamilialeRepository extends ServiceEntityRepository
     public function getAllYearsByMatricule(string $matricule): array
     {
         return array_unique(
-            array_map(fn ($situation) => $situation->getAnnee(), $this->findByMatricule($matricule))
+            array_map(fn($situation) => $situation->annee, $this->findByMatricule($matricule))
         );
     }
 
@@ -66,30 +66,20 @@ class SituationFamilialeRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
 
         if ((is_countable($situations) ? \count($situations) : 0) > 0) {
-            return $situations[0]->getACharge();
+            return $situations[0]->a_charge;
         }
 
         return 0;
     }
 
-    public function findByMatriculeAndYear(string $rdvMatricule, int $year, bool $one = false): array|SituationFamiliale
+    public function findByMatriculeAndYear(string $rdvMatricule, int $year): ?SituationFamiliale
     {
-        $situations = $this->createQueryBuilder('situation_familiale')
+        return $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.annee = :annee')
             ->setParameter('annee', $year)
             ->andWhere('situation_familiale.rdv_matricule = :matricule')
             ->setParameter('matricule', $rdvMatricule)
             ->orderBy('situation_familiale.a_charge', 'ASC')
-            ->getQuery()->getResult();
-
-        if (!$one) {
-            return $situations;
-        }
-
-        if ((is_countable($situations) ? \count($situations) : 0) > 0) {
-            return $situations[0];
-        }
-
-        return null;
+            ->getQuery()->getOneOrNullResult();
     }
 }

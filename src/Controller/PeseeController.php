@@ -49,8 +49,8 @@ class PeseeController extends AbstractController
     public function all(): Response
     {
         $user = $this->getUser();
-        $rdvMatricule = $user->getRdvMatricule();
-        $duobacs = $this->duobacRepository->findByMatricule($user->getRdvMatricule());
+        $rdvMatricule = $user->rdv_matricule;
+        $duobacs = $this->duobacRepository->findByMatricule($user->rdv_matricule);
         if (0 == \count($duobacs)) {
             $this->addFlash('danger', 'Aucun duobac trouvé');
 
@@ -96,13 +96,13 @@ class PeseeController extends AbstractController
     public function byYear(int $year): Response
     {
         $user = $this->getUser();
-        $rdvMatricule = $user->getRdvMatricule();
+        $rdvMatricule = $user->rdv_matricule;
         $duobacs = $this->duobacRepository->findByMatricule($rdvMatricule);
         $pesees = $this->peseeRepository->findByDuobacsAndYear($duobacs, $year);
         $data = $this->peseeUtils->groupByMonthsForOneYear($pesees);
         $totalUser = $this->peseeUtils->getTotal($pesees);
-        $situation = $this->situationFamilialeRepository->findByMatriculeAndYear($rdvMatricule, $year, true);
-        $charge = $situation ? $situation->getACharge() : 0;
+        $situation = $this->situationFamilialeRepository->findByMatriculeAndYear($rdvMatricule, $year);
+        $charge = $situation ? $situation->a_charge : 0;
         $peseesMenages = $this->peseeMoyenneRepository->findByChargeAndYear(
             $charge,
             $year
