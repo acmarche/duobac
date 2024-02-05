@@ -7,13 +7,14 @@
     {% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}Mon duobac{% endblock %}</title>
-
-    {% block stylesheets %}{% endblock %}
-
-    {{ encore_entry_link_tags('app') }}
-    {{ encore_entry_script_tags('app') }}
-
     <link href="{{ asset('bundles/acmarcheduobac/css/print.css') }}" rel="stylesheet" media="print">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+    {% block stylesheets %}
+
+    {% endblock %}
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
 </head>
 <body class="d-flex flex-column h-100">
 {% set action = app.request.attributes.get("_route") %}
