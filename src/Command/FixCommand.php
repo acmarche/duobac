@@ -3,6 +3,7 @@
 namespace AcMarche\Duobac\Command;
 
 use AcMarche\Duobac\Repository\UserRepository;
+use AcMarche\Duobac\Security\SecurityData;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,8 +27,9 @@ class FixCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
         foreach ($this->userRepository->findAll() as $user) {
-            $user->roles = ['ROLE_DUOBAC'];
+            $user->setRoles([SecurityData::getRoleUser()]);
         }
 
         $this->userRepository->flush();
