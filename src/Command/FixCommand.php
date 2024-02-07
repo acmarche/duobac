@@ -29,7 +29,7 @@ class FixCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         foreach ($this->userRepository->findAll() as $user) {
-            $user->setRoles([SecurityData::getRoleUser()]);
+            $user->roles = json_encode([SecurityData::getRoleUser()]);
         }
 
         $this->userRepository->flush();
