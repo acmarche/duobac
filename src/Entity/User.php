@@ -16,7 +16,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringa
 {
     use IdTrait;
 
-    #[ORM\Column(nullable: false)]
+    #[ORM\Column(nullable: true)]
     public array $roles = [];
     #[ORM\Column(type: 'string')]
     public ?string $password = null;
