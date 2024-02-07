@@ -16,8 +16,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class FixCommand extends Command
 {
-    private array $types = ['duobac', 'moyenne'];
-
     public function __construct(
         private readonly UserRepository $userRepository
     ) {
@@ -29,7 +27,7 @@ class FixCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         foreach ($this->userRepository->findAll() as $user) {
-            $user->roles = [SecurityData::getRoleUser()];
+            $user->setRoles([SecurityData::getRoleUser()]);
         }
 
         $this->userRepository->flush();
