@@ -25,6 +25,19 @@ class ImportManager
     ) {
     }
 
+    public function read(string $fileName):void
+    {
+        $spl = new \SplFileObject($fileName);
+        $spl->setFlags(\SplFileObject::READ_CSV | \SplFileObject::SKIP_EMPTY | \SplFileObject::READ_AHEAD);
+        $spl->setCsvControl('|');
+        foreach ($spl as $key => $row) {
+            if ($key === 0) {
+                $header = $row[0];
+                continue;
+            }
+        }
+    }
+
     public function updateSituationFamiliale(string $matricule, string $puce, int $year, int $aCharge): void
     {
         if (($situationFamiliale = $this->situationFamilialeRepository->findOneBy(

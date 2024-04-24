@@ -61,6 +61,8 @@ class UpdateCommand extends Command
         if ('duobac' === $type) {
             $i = 0;
             $this->peseeRepository->removeByYear($year);
+            //todo try this
+            $this->importManager->read($file);
             foreach ($this->importManager->getLines($file) as $data) {
                 $io->writeln($data[1].' '.$i);
                 $this->importManager->treatment($data, $year);
