@@ -73,7 +73,12 @@ class UpdateCommand extends Command
                     continue;
                 }
                 $io->writeln($data[1].' '.$i);
-                $this->importManager->treatment($data, $year);
+                try {
+                    $this->importManager->treatment($data, $year);
+                } catch (\Exception $exception) {
+                    $io->error($data[0].' '.$data[1]);
+                }
+
                 $key = $data = null;
                 ++$i;
             }
