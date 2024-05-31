@@ -121,6 +121,7 @@ class ImportManager
                 ++$i;
             }
         }
+        $duobac = null;
         $this->duobacRepository->flush();
     }
 
