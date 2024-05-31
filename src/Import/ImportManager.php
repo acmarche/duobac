@@ -25,17 +25,13 @@ class ImportManager
     ) {
     }
 
-    public function read(string $fileName):void
+    public function read(string $fileName): \SplFileObject
     {
         $spl = new \SplFileObject($fileName);
         $spl->setFlags(\SplFileObject::READ_CSV | \SplFileObject::SKIP_EMPTY | \SplFileObject::READ_AHEAD);
         $spl->setCsvControl('|');
-        foreach ($spl as $key => $row) {
-            if ($key === 0) {
-                $header = $row[0];
-                continue;
-            }
-        }
+
+        return $spl;
     }
 
     public function updateSituationFamiliale(string $matricule, string $puce, int $year, int $aCharge): void
@@ -125,18 +121,6 @@ class ImportManager
             }
         }
         $this->duobacRepository->flush();
-    }
-
-    public function getLines($file): iterable
-    {
-        $handle = fopen($file, 'r');
-        try {
-            while (($line = fgetcsv($handle, 1000, '|')) !== false) {
-                yield $line;
-            }
-        } finally {
-            fclose($handle);
-        }
     }
 
     public function insertReleve(string $puce, \DateTime|\DateTimeImmutable $date, float $poid, int $acharge): void
