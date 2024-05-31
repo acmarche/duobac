@@ -13,6 +13,7 @@ use AcMarche\Duobac\Entity\Pesee;
 use AcMarche\Duobac\Entity\SituationFamiliale;
 use AcMarche\Duobac\Repository\DuobacRepository;
 use AcMarche\Duobac\Repository\SituationFamilialeRepository;
+use AcMarche\Duobac\Service\StringUtils;
 use DateTime;
 
 class ImportManager
@@ -79,17 +80,17 @@ class ImportManager
             $this->duobacRepository->persist($duobac);
         }
 
-        $duobac->rdv_nom = $nom;
-        $duobac->rdv_prenom_1 = $prenom;
+        $duobac->rdv_nom = StringUtils::ensureUtf8($nom);
+        $duobac->rdv_prenom_1 = StringUtils::ensureUtf8($prenom);
         $duobac->loc_code_post = $codePostal;
         $duobac->rue_code_rue = $codeRue;
-        $duobac->rue_lib_1lg = $rue;
+        $duobac->rue_lib_1lg = StringUtils::ensureUtf8($rue);
         $duobac->adr_numero = $adresseNumero;
         $duobac->adr_indice = $adresseIndice;
-        $duobac->adr_boite = $adresseBoite;
+        $duobac->adr_boite = StringUtils::ensureUtf8($adresseBoite);
         $duobac->rdv_cod_redevable = $codeRedevable;
         $duobac->rdv_cod_classe = $codeClass;
-        $duobac->puc_no_conteneur = $numContainer;
+        $duobac->puc_no_conteneur = StringUtils::ensureUtf8($numContainer);
         if ($purDateDebut) {
             $duobac->pur_date_debut = DateTime::createFromFormat($this->format, $purDateDebut);
         }

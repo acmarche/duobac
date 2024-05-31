@@ -74,7 +74,7 @@ class UpdateCommand extends Command
                 }
                 $io->writeln($data[1].' '.$i);
                 $this->importManager->treatment($data, $year);
-
+                $key = $data = null;
                 ++$i;
             }
         }
