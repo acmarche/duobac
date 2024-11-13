@@ -44,7 +44,6 @@ class MoyenneManager
                 ['date_pesee' => $dateTime, 'a_charge' => $charge]
             )) === null) {
             $moyenne = new PeseeMoyenne();
-            dump($dateTime);
             $moyenne->date_pesee = $dateTime;
             $moyenne->a_charge = $charge;
             $this->peseeMoyenneRepository->persist($moyenne);
