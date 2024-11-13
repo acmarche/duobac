@@ -15,15 +15,16 @@ use Exception;
 class DateUtils
 {
     /**
+     * @param string $date
      * @param string $format
      *
-     * @return bool|DateTimeInterface
+     * @return DateTimeInterface
      *
      * @throws Exception
      */
-    public function convertStringToDateTime(string $date, $format = 'd/m/Y'): DateTimeImmutable
+    public function convertStringToDateTime(string $date, string $format = 'd/m/Y'): DateTimeInterface
     {
-        if (!$dateTime = DateTimeImmutable::createFromFormat($format, $date)) {
+        if (!$dateTime = \DateTime::createFromFormat($format, $date)) {
             throw new Exception("Date $date n'a pas pu être convertie en DateTime, format: ".$format);
         }
 
