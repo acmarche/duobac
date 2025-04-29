@@ -128,7 +128,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringa
     {
         if (!$this->duobacs->contains($duobac)) {
             $this->duobacs[] = $duobac;
-            $duobac->setUser($this);
+            $duobac->user = $this;
         }
 
         return $this;
