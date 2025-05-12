@@ -74,12 +74,18 @@ class SituationFamilialeRepository extends ServiceEntityRepository
 
     public function findByMatriculeAndYear(string $rdvMatricule, int $year): ?SituationFamiliale
     {
-        return $this->createQueryBuilder('situation_familiale')
+        $situation = $this->createQueryBuilder('situation_familiale')
             ->andWhere('situation_familiale.annee = :annee')
             ->setParameter('annee', $year)
             ->andWhere('situation_familiale.rdv_matricule = :matricule')
             ->setParameter('matricule', $rdvMatricule)
             ->orderBy('situation_familiale.a_charge', 'ASC')
-            ->getQuery()->getOneOrNullResult();
+            ->getQuery()->getResult();
+
+        if ($this->count($situation) > 0) {
+            return $situation[0];
+        } else {
+            return null;
+        }
     }
 }
