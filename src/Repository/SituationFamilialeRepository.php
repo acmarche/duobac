@@ -82,7 +82,7 @@ class SituationFamilialeRepository extends ServiceEntityRepository
             ->orderBy('situation_familiale.a_charge', 'ASC')
             ->getQuery()->getResult();
 
-        if ($this->count($situation) > 0) {
+        if (\count($situation) > 0) {
             return $situation[0];
         } else {
             return null;
